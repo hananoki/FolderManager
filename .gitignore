@@ -1,0 +1,17 @@
+/.qtc_clangd
+/.svn
+/.vs
+/*.cache
+/main/.qtc_clangd
+/main/.vs
+/main/debug
+/main/release
+/*.bat
+/main/Makefile*
+ui_*.h
+/*.exe
+/main/*.user
+/*.json
+/main/foldermanager_plugin_import.cpp
+/main/src/icon_dummy
+/package

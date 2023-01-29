@@ -1,0 +1,56 @@
+	
+	
+	
+	
+	
+	
+UI_UPROJECT_GENERATE	VisualStudioプロジェクトファイルを生成する
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+
+
+UI_NEW_MODULE	新規 モジュール
+UI_UPDATE_BUILD_CS	{0}.Build.cs 更新
+UI_LAUNCH_GAME	UnrealEngineのバージョンを切り替えます...
+UI_SWITCH_UNREAL_ENGINE_VERSION	
+
+
+	
+COMDLG_UPROJECT_FILE	uprojectファイル
+COMDLG_All_FILE	すべてのファイル
+COMDLG_SELECT_UPROJECT_FILE	uprojectファイルを選択してください
+
+MSG_TXTBOX	ファイル名を入力するか、ファイルをD&Dしてください
+MSG_MODULE_NONE	ファイル名を入力するか、ファイルをD&Dしてください
+MSG_FILE_DELETE	ファイルを削除しました
+MSG_MODULE_TXTBOX	モジュール名を入力してください
+MSG_FILENAME_TXTBOX	ファイル名を入力してください
+MSG_ADD_MODULE_PROJECT_NO	このモジュールはプロジェクトに登録されています
+MSG_ADD_MODULE_PROJECT_OK	プロジェクトにモジュールを追加しました
+MSG_FILE_CLOSE	上書きする可能性があるので、ファイルを閉じてください
+MSG_WRITE_REG	レジストリを書き換えました
+MSG_REQUIRES_ADMIN	管理者権限が必要です
+MSG_ERROR_RENAME_MODULE	無効な名前が設定されました
+MSG_REMOVE	ファイルを削除しました: %1
+NOTIFY_NEWCLASS	新しいクラスファイルを作成しました
+NOTIFY_FILE_DELETE	不要なファイルを削除しました
+NOTIFY_UPDATE_OK_BUILD_CS	{0}.Build.cs 更新しました
+NOTIFY_UPDATE_NO_BUILD_CS	{0}.Build.cs に書き込みが出来ません
+NOTIFY_UPDATE_FOLDER_COLOR	{0}個 フォルダカラーを設定しました
+CONTEXT_OPEN	開く
+CONTEXT_DELETE	削除
+CONTEXT_RENAME	名前の変更
+	
+	

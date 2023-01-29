@@ -1,0 +1,58 @@
+	
+	
+	
+	
+	
+	
+UI_UPROJECT_GENERATE	Generate Visual Studio project files
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+
+
+UI_NEW_MODULE	New Module
+UI_UPDATE_BUILD_CS	Update {0}.Build.cs
+UI_LAUNCH_GAME	Launch game
+UI_SWITCH_UNREAL_ENGINE_VERSION	Switch Unreal Engine version...
+
+
+	
+COMDLG_UPROJECT_FILE	uproject files
+COMDLG_All_FILE	All files
+COMDLG_SELECT_UPROJECT_FILE	Select uproject file
+
+MSG_TXTBOX	Enter The file name or D&D the file
+MSG_MODULE_NONE	Module name is empty
+MSG_FILE_DELETE	Deleted the file
+MSG_MODULE_TXTBOX	Please enter the module name
+
+MSG_FILENAME_TXTBOX	Please enter the file name
+
+MSG_ADD_MODULE_PROJECT_NO	This module is registered in the project
+MSG_ADD_MODULE_PROJECT_OK	Add module to project
+MSG_FILE_CLOSE	Please close the file as it may overwrite
+MSG_WRITE_REG	Rewrote the registry
+MSG_REQUIRES_ADMIN	Requires administrator privileges
+MSG_ERROR_RENAME_MODULE	Invalid name set
+MSG_REMOVE	deleted the file: %1
+NOTIFY_NEWCLASS	Created a new class file
+NOTIFY_FILE_DELETE	Deleted unnecessary files
+NOTIFY_UPDATE_OK_BUILD_CS	{0}.Build.cs updated
+NOTIFY_UPDATE_NO_BUILD_CS	Unable to write to {0}.Build.cs
+NOTIFY_UPDATE_FOLDER_COLOR	{0} folder colors have been set
+CONTEXT_OPEN	Open
+CONTEXT_DELETE	Delete
+CONTEXT_RENAME	Rename
+	
+	

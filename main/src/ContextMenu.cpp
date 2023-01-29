@@ -1,0 +1,8 @@
+﻿#include "ContextMenu.h"
+
+//////////////////////////////////////////////////////////////////////////////////
+ContextMenu:: ~ContextMenu() {
+	for( auto& p : lst ) {
+		delete p;
+	}
+}

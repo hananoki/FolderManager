@@ -1,0 +1,20 @@
+#pragma once
+
+#include "ItemFileInfo.h"
+
+//////////////////////////////////////////////////////////////////////////////////
+class ItemL : public ItemFileInfo {
+public:
+
+	bool reference;
+	bool mkChild;
+
+	/////////////////////////////////////////
+	ItemL( QTreeWidget* parent, const QString& _fullPath );
+
+	/////////////////////////////////////////
+	void makeChild();
+};
+
+
+

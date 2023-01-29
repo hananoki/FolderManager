@@ -1,0 +1,55 @@
+﻿
+QWidget {
+	/**/
+	font-family: "Segoe UI"
+	/**/
+	/**
+	font-family: "07LogoTypeGothic7"
+	/**/
+}
+
+/**/
+QAbstractItemView {
+  alternate-background-color: #F4F4F4;
+}
+/**/
+
+
+/*
+#treeWidgetMod {
+	show-decoration-selected: 1;
+	font-family: "Ricty";
+	font-size: 12px;
+}
+/**/
+QTreeWidget::item,
+QListView::item {
+	height: 20px;
+}
+
+QListView::item:!selected:hover,
+QTreeView::item:!selected:hover {
+	background-color: #8BA7C9;
+}
+
+
+QProgressBar {
+    border-top: 1px solid grey;
+    border-right: 0px solid grey;
+    border-left: 0px solid grey;
+    border-bottom: 0px solid grey;
+    background-color: #FFF;
+}
+QProgressBar::chunk {
+    background-color: #0F0;
+}
+
+#statusBar {
+	background:qlineargradient(x1:0, y1:0, x2:0, y2:1,stop:0 #FCFCFC, stop:1.0 #E7E7E7);
+	border-top: 1px solid gray;
+	min-height: 24px;
+	max-height: 24px;
+	padding-left: 4px;
+}
+
+
