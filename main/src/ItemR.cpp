@@ -1,15 +1,20 @@
-#include "ItemR.h"
+ï»¿#include "ItemR.h"
 #include "FileDB.h"
 #include "utils.h"
 
 
 
 //////////////////////////////////////////////////////////////////////////////////
-ItemR::ItemR( QTreeWidget* parent, const QString& _fullPath ) :
+ItemR::ItemR( QTreeWidget* parent, const QString& _fullPath, bool bFullName /*= false*/ ) :
 	ItemFileInfo( parent, _fullPath ),
 	size( -1 ) {
 
-	setText( eName, path::getFileName( fullPath ) );
+	if( bFullName ) {
+		setText( eName, fullPath );
+	}
+	else {
+		setText( eName, path::getFileName( fullPath ) );
+	}
 
 	if( fs::isExistDirectory( _fullPath ) ) {
 		bool b1 = fileInfo.isSymLink();
@@ -21,27 +26,29 @@ ItemR::ItemR( QTreeWidget* parent, const QString& _fullPath ) :
 			setIcon( 0, ICON_FOLDER );
 			//auto te = text(0);
 			if( b4 ) {
-				setText( eType, u8"ƒWƒƒƒ“ƒNƒVƒ‡ƒ“" );
+				setText( eType, u8"ã‚¸ãƒ£ãƒ³ã‚¯ã‚·ãƒ§ãƒ³" );
+				setText( eName, $$( "%1 (%2)" ).arg( path::getFileName( fullPath ) ).arg( fileInfo.linkTarget() ) );
 			}
 			else if( b3 ) {
-				setText( eType, u8"ƒVƒ‡[ƒgƒJƒbƒg" );
+				setText( eType, u8"ã‚·ãƒ§ãƒ¼ãƒˆã‚«ãƒƒãƒˆ" );
 			}
 			else {
-				setText( eType, u8"ƒVƒ“ƒ{ƒŠƒbƒNƒŠƒ“ƒN" );
+				setText( eType, u8"ã‚·ãƒ³ãƒœãƒªãƒƒã‚¯ãƒªãƒ³ã‚¯" );
 				if( ( b1 & b2 ) == false ) {
 					qDebug() << "";
 				}
 
 				fileDB.setSymbolicLink( fullPath, fileInfo.symLinkTarget() );
+				setText( eName, $$( "%1 (%2)" ).arg( path::getFileName( fullPath ) ).arg( fileInfo.linkTarget() ) );
 			}
 		}
 		else {
 			setIcon( eName, icon::get( fullPath ) );
-			setText( eType, u8"ƒtƒHƒ‹ƒ_" );
+			setText( eType, u8"ãƒ•ã‚©ãƒ«ãƒ€" );
 			setText( eDate, $::toString( fileInfo.lastModified() ) );
 
 			size = fileDB.get( fullPath );
-			setText( eSize, $::fileSize( fileDB.get( fullPath ) ) );
+			setText( eSize, $::toStringFileSize( fileDB.get( fullPath ) ) );
 			//setText( 1, $::toString( fileDB.get( fullPath ) ) );
 			setTextAlignment( eSize, Qt::AlignRight );
 		}
@@ -53,7 +60,7 @@ ItemR::ItemR( QTreeWidget* parent, const QString& _fullPath ) :
 		size = fileInfo.size();
 		setText( eDate, $::toString( fileInfo.lastModified() ) );
 		setText( eType, $::fileKind( fullPath ) );
-		setText( eSize, $::fileSize( fileInfo.size() ) );
+		setText( eSize, $::toStringFileSize( fileInfo.size() ) );
 
 		//setText( 1, $::toString( QFileInfo( fullPath ).size() ) );
 		setTextAlignment( eSize, Qt::AlignRight );
@@ -61,12 +68,10 @@ ItemR::ItemR( QTreeWidget* parent, const QString& _fullPath ) :
 }
 
 
-
-
 /////////////////////////////////////////
 bool ItemR::openFile() {
 	if( !fs::isExistFile( fullPath ) ) {
-		HLogView::error( u8"ƒtƒ@ƒCƒ‹‚ªŒ©‚Â‚©‚è‚Ü‚¹‚ñ: " + fullPath );
+		HLogView::error( u8"ãƒ•ã‚¡ã‚¤ãƒ«ãŒè¦‹ã¤ã‹ã‚Šã¾ã›ã‚“: " + fullPath );
 		return false;
 	}
 	$::showInExplorer( fullPath );
@@ -74,15 +79,45 @@ bool ItemR::openFile() {
 }
 
 
-
-
-
 /////////////////////////////////////////
 QString ItemR::fileName() {
 	return path::getFileName( fullPath );
 }
 
+
 /////////////////////////////////////////
 QString ItemR::folderPath() {
 	return path::getDirectoryName( fullPath );
+}
+
+
+
+
+//////////////////////////////////////////////////////////////////////////////////
+ItemSymLink::ItemSymLink( QTreeWidget* parent, const QString& _fullPath, const QString& _targegtPath ) :
+	ItemFileInfo( parent, _fullPath ),
+	targegtPath( _targegtPath ) {
+
+	setText( 0, _fullPath );
+	setIcon( 0, icon::get( _fullPath ) );
+
+	QFileInfo fi( _fullPath );
+	if( fi.isJunction() ) {
+		setText( 1, u8"ã‚¸ãƒ£ãƒ³ã‚¯ã‚·ãƒ§ãƒ³" );
+	}
+	else if( fi.isShortcut() ) {
+		setText( 1, u8"ã‚·ãƒ§ãƒ¼ãƒˆã‚«ãƒƒãƒˆ" );
+	}
+	else {
+		setText( 1, u8"ã‚·ãƒ³ãƒœãƒªãƒƒã‚¯ãƒªãƒ³ã‚¯" );
+	}
+
+	setText( 2, _targegtPath );
+
+	if( !fs::isExistDirectory( _targegtPath ) ) {
+		setBackgroundColor( 2, QColor( "#FBB" ) );
+	}
+	//else {
+	setIcon( 2, icon::get( _targegtPath ) );
+	//}
 }

@@ -3,20 +3,19 @@
         <file>style.qss</file>
         <file>icon/reload.png</file>
         <file>icon/settings.png</file>
-        <file>icon/icon_159120_16.png</file>
-        <file>icon/editor.png</file>
-        <file>icon/localize.png</file>
         <file>icon/internet.png</file>
-        <file>icon/plus.png</file>
-        <file>icon/minus.png</file>
         <file>icon/info2.png</file>
-        <file>icon/settings2.png</file>
-        <file>icon/run.png</file>
         <file>markdown/about.md</file>
         <file>icon/folder.png</file>
         <file>icon/driveFind.png</file>
         <file>icon/AppIcon.ico</file>
         <file>icon/link.png</file>
-        <file>icon/up4.png</file>
+        <file>icon/arrowL2.png</file>
+        <file>icon/arrowR2.png</file>
+        <file>icon/arrowU2.png</file>
+        <file>icon/icon_159120_16.png</file>
+        <file>icon/linkC.png</file>
+        <file>icon/menu.png</file>
+        <file>icon/garbageCan.png</file>
     </qresource>
 </RCC>

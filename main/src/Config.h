@@ -14,8 +14,9 @@ using TMap = QMap<QString, QString>;
 	CONFIG_VALUE( QSize, size ) \
 	CONFIG_VALUE( QPoint, transPos ) \
 	CONFIG_VALUE( QSize, transSize ) \
-	CONFIG_VALUE( QString, driveLetter ) \
+	CONFIG_VALUE( QChar, driveLetter ) \
 	CONFIG_VALUE( QString, treeWidgetHeaderSize ) \
+	CONFIG_VALUE( QString, treeWidget2_HeaderSize ) \
 	CONFIG_VALUE( QString, splitterSize ) \
 	CONFIG_VALUE( int, tabIndex )
 

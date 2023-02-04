@@ -18,7 +18,7 @@
     <normaloff>:/res/icon/AppIcon.ico</normaloff>:/res/icon/AppIcon.ico</iconset>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <layout class="QVBoxLayout" name="verticalLayout">
+   <layout class="QVBoxLayout" name="verticalLayout_2">
     <property name="spacing">
      <number>0</number>
     </property>
@@ -35,61 +35,86 @@
      <number>0</number>
     </property>
     <item>
-     <widget class="QToolBar" name="toolBar">
-      <property name="windowTitle">
-       <string>toolBar</string>
+     <widget class="UIDriveButton" name="widget" native="true">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
       </property>
-      <property name="movable">
-       <bool>false</bool>
-      </property>
-      <property name="iconSize">
+      <property name="minimumSize">
        <size>
-        <width>14</width>
-        <height>14</height>
+        <width>0</width>
+        <height>0</height>
        </size>
       </property>
-      <property name="toolButtonStyle">
-       <enum>Qt::ToolButtonTextBesideIcon</enum>
+      <property name="maximumSize">
+       <size>
+        <width>16777215</width>
+        <height>16777215</height>
+       </size>
       </property>
-      <addaction name="action_2"/>
-      <addaction name="actionDebug"/>
+      <layout class="QHBoxLayout" name="horizontalLayout">
+       <property name="spacing">
+        <number>0</number>
+       </property>
+       <property name="leftMargin">
+        <number>4</number>
+       </property>
+       <property name="topMargin">
+        <number>4</number>
+       </property>
+       <property name="rightMargin">
+        <number>4</number>
+       </property>
+       <property name="bottomMargin">
+        <number>4</number>
+       </property>
+      </layout>
      </widget>
     </item>
     <item>
-     <layout class="QHBoxLayout" name="horizontalLayout">
+     <layout class="QVBoxLayout" name="verticalLayout">
       <property name="spacing">
        <number>0</number>
       </property>
-      <property name="rightMargin">
-       <number>4</number>
-      </property>
-      <property name="bottomMargin">
-       <number>4</number>
-      </property>
       <item>
-       <widget class="UIDriveButton" name="widget" native="true">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Fixed" vsizetype="Expanding">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
+       <widget class="QToolBar" name="toolBar">
+        <property name="windowTitle">
+         <string>toolBar</string>
         </property>
-        <property name="minimumSize">
+        <property name="movable">
+         <bool>false</bool>
+        </property>
+        <property name="iconSize">
          <size>
-          <width>36</width>
-          <height>0</height>
+          <width>12</width>
+          <height>12</height>
          </size>
         </property>
-        <property name="maximumSize">
-         <size>
-          <width>36</width>
-          <height>16777215</height>
-         </size>
+        <property name="toolButtonStyle">
+         <enum>Qt::ToolButtonTextUnderIcon</enum>
         </property>
+        <addaction name="actionL"/>
+        <addaction name="actionR"/>
+        <addaction name="action_moveParent"/>
+        <addaction name="separator"/>
+        <addaction name="action_calcFolder"/>
+        <addaction name="separator"/>
+        <addaction name="action_fileView"/>
+        <addaction name="action_symbolicLink"/>
+        <addaction name="separator"/>
+        <addaction name="actionDebug"/>
        </widget>
       </item>
       <item>
        <widget class="QSplitter" name="splitter">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
         </property>
@@ -135,7 +160,7 @@
     <string>最新の情報に更新</string>
    </property>
   </action>
-  <action name="action_2">
+  <action name="action_calcFolder">
    <property name="icon">
     <iconset resource="res.qrc">
      <normaloff>:/res/icon/driveFind.png</normaloff>:/res/icon/driveFind.png</iconset>
@@ -143,13 +168,55 @@
    <property name="text">
     <string>フォルダ容量を計算</string>
    </property>
-   <property name="toolTip">
-    <string>フォルダ容量を計算</string>
-   </property>
   </action>
   <action name="actionDebug">
    <property name="text">
     <string>Debug</string>
+   </property>
+  </action>
+  <action name="actionL">
+   <property name="icon">
+    <iconset resource="res.qrc">
+     <normaloff>:/res/icon/arrowL2.png</normaloff>:/res/icon/arrowL2.png</iconset>
+   </property>
+   <property name="text">
+    <string>戻る</string>
+   </property>
+  </action>
+  <action name="actionR">
+   <property name="icon">
+    <iconset resource="res.qrc">
+     <normaloff>:/res/icon/arrowR2.png</normaloff>:/res/icon/arrowR2.png</iconset>
+   </property>
+   <property name="text">
+    <string>進む</string>
+   </property>
+  </action>
+  <action name="action_moveParent">
+   <property name="icon">
+    <iconset resource="res.qrc">
+     <normaloff>:/res/icon/arrowU2.png</normaloff>:/res/icon/arrowU2.png</iconset>
+   </property>
+   <property name="text">
+    <string>上のフォルダへ</string>
+   </property>
+  </action>
+  <action name="action_symbolicLink">
+   <property name="icon">
+    <iconset resource="res.qrc">
+     <normaloff>:/res/icon/linkC.png</normaloff>:/res/icon/linkC.png</iconset>
+   </property>
+   <property name="text">
+    <string>シンボリックリンク</string>
+   </property>
+  </action>
+  <action name="action_fileView">
+   <property name="icon">
+    <iconset resource="res.qrc">
+     <normaloff>:/res/icon/menu.png</normaloff>:/res/icon/menu.png</iconset>
+   </property>
+   <property name="text">
+    <string>ファイルビュー</string>
    </property>
   </action>
  </widget>

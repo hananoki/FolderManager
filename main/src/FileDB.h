@@ -7,11 +7,12 @@ class FileDB : public QObject {
 public:
 	FileDB();
 
-	//void set( const QFileInfo& finfo );
-	void setSize( const QString& fullPath, qint64 size );
+	void init();
+
+	void setSize( const QString& fullPath, qint64 folderSize, qint64 fileSize );
 	void setSymbolicLink( const QString& fullPath, const QString& targetPath );
 	qint64 get( const QString& fullPath );
-
+	SizeSet getSizeSet( const QString& fullPath );
 	void analize( const QString& driveName );
 
 	void save();
@@ -23,6 +24,10 @@ public:
 signals:
 	void startAnalize();
 	void completeAnalize();
+
+	void completeFileLoad();
+
+	void errorCache( QString path );
 
 private:
 	class Impl;

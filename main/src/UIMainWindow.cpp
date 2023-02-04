@@ -1,4 +1,4 @@
-#include "UIMainWindow.h"
+﻿#include "UIMainWindow.h"
 #include "ui_UIMainWindow.h"
 
 #include "utils.h"
@@ -17,18 +17,25 @@ public:
 	QFuture<void> future;
 	QFutureWatcher<void> watcher;
 
+	QList<QAction*> browseActions;
+
+	QStringList errorList;
+
 	/////////////////////////////////////////
 	Impl( self_t* _self ) :
 		self( _self ) {
 
 		UIMainWindow::instance = self;
 		setupUi( self );
-
+		//actionL->setIcon( icon::SP_ArrowBack() );
+		//actionR->setIcon( icon::SP_ArrowForward() );
 		connect(
+			&fileDB,
+			&FileDB::errorCache,
 			self,
-			&self_t::signal_addItem,
-			self,
-			std::bind( &Impl::addItem, this, std::placeholders::_1, std::placeholders::_2 ) );
+			std::bind( &Impl::errorCache, this, std::placeholders::_1 ) );
+
+		fileDB.init();
 	}
 
 
@@ -36,26 +43,80 @@ public:
 	void setup() {
 		rollbackWindow();
 
-#if NDEBUG
-		toolBar->removeAction(actionDebug);
+#ifdef NDEBUG
+		toolBar->removeAction( actionDebug );
 #endif
 
 		progressBar->hide();
+		actionL->setEnabled(false);
+		actionR->setEnabled( false );
 
-		viewL->setDrive( config.driveLetter + ":/" );
 
-		$Action::triggered( action_2, std::bind( &Impl::_calcDrive, this ) );
+		action_fileView->setCheckable( true );
+		action_symbolicLink->setCheckable( true );
+		browseActions << action_fileView;
+		browseActions << action_symbolicLink;
+
+		action_fileView->setChecked( true );
+
+		/// 親アイテムに移動
+		$Action::triggered( action_moveParent, std::bind( &self_t::action_moveParent, self ) );
+
+		/// フォルダ容量を計算
+		$Action::triggered( action_calcFolder, std::bind( &self_t::action_calcFolder, self ) );
 
 		$Action::triggered( actionDebug, std::bind( &Impl::_actionDebug, this ) );
 
-		
+
+
+		$Action::triggered( action_fileView, [&]() {
+			setBrowseMode( action_fileView );
+		} );
+		$Action::triggered( action_symbolicLink, [&]() {
+			setBrowseMode( action_symbolicLink );
+		} );
 
 		connect( &fileDB, &FileDB::startAnalize, std::bind( &Impl::_startAnalize, this ) );
 		connect( &fileDB, &FileDB::completeAnalize, std::bind( &Impl::_completeAnalize, this ) );
+		connect( &fileDB, &FileDB::completeFileLoad, std::bind( &Impl::completeFileLoad, this ) );
+
+		// 左ビューの選択
+		connect(
+			viewL,
+			&UIViewL::itemSelectionChanged,
+			std::bind( &Impl::uiViewL_itemSelectionChanged, this, std::placeholders::_1 ) );
+
+		connect(
+			qtWindow,
+			&UIMainWindow::uiViewL_selectPath,
+			self,
+			std::bind( &Impl::uiViewL_selectPath, this, std::placeholders::_1 ) );
 	}
 
 
-	
+
+
+
+	/////////////////////////////////////////
+	void uiViewL_selectPath( QString path ) {
+		QFileInfo fi( path );
+		action_moveParent->setEnabled( !fi.isRoot() );
+	}
+
+
+	/////////////////////////////////////////
+	void setBrowseMode( QAction* act ) {
+		int i = 0;
+		for( auto& p : browseActions ) {
+			bool b = p == act;
+			p->setChecked( b );
+
+			if( b ) {
+				emit self->setBrowseMode( i );
+			}
+			i++;
+		}
+	}
 
 
 	/////////////////////////////////////////
@@ -66,8 +127,26 @@ public:
 
 	/////////////////////////////////////////
 	void _completeAnalize() {
-		UIStatusBar::info( u8"�t�H���_�e�ʂ��v�Z���������܂���" );
+		UIStatusBar::info( u8"フォルダ容量を計算が完了しました" );
 		progressBar->hide();
+	}
+
+
+	/////////////////////////////////////////
+	void completeFileLoad() {
+		if( errorList.isEmpty() ) {
+			UIStatusBar::info( u8"キャッシュデータを読みcompleteFileLoad" );
+		}
+		else {
+			QMessageBox::warning( self, u8"情報", u8"キャッシュデータが壊れているため、読み込みを中止しました\n\n"+ errorList.join("\n") );
+			UIStatusBar::warning( u8"キャッシュデータが壊れているため、読み込みを中止しました" );
+		}
+	}
+
+
+	/////////////////////////////////////////
+	void errorCache( QString path ) {
+		errorList << path;
 	}
 
 
@@ -85,26 +164,20 @@ public:
 		//	}
 		//	fs::writeAllLines( f + ".txt", aa );
 		//}
-		fileDB.save();
+		//fileDB.save();
+	}
+
+
+
+
+
+	/////////////////////////////////////////
+	void uiViewL_itemSelectionChanged( ItemL* item ) {
+		setBrowseMode( action_fileView );
 	}
 
 
 	/////////////////////////////////////////
-	void _calcDrive() {
-		auto button = QMessageBox::question( self, u8"�m�F", config.driveLetter + u8"�h���C�u�̃t�H���_�e�ʂ��v�Z���܂��B\n��낵���ł����H" );
-		if( button == QMessageBox::No )return;
-
-		fileDB.analize( config.driveLetter );
-	}
-
-
-	/////////////////////////////////////////
-	void addItem( QTreeWidgetItem* p1, QTreeWidgetItem* p2 ) {
-		p1->addChild( p2 );
-	}
-
-
-	////////////////////////
 	void backupWindow() {
 		config.pos = self->pos();
 		config.size = self->size();
@@ -145,10 +218,9 @@ void UIMainWindow::start() {
 	impl->setup();
 
 	emit signal_start();
+	//emit signal_startAfter();
 
-	//fileDB.initMO2( utils::installGamePath(), config.getMO2Path(), config.seleectMO2ProfileName );
-	//UIMainWindow::changePanel( EPanelMode::Files );
-
+	emit uiViewL_selectPath( $$( "%1:/" ).arg( config.driveLetter ) );
 }
 
 /////////////////////////////////////////

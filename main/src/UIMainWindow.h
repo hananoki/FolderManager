@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include <QMainWindow>
 
@@ -7,6 +7,7 @@
 class UIViewL;
 class UIViewR;
 class UIStatusBar;
+class ItemL;
 
 //////////////////////////////////////////////////////////////////////////////////
 class UIMainWindow : public QMainWindow {
@@ -30,11 +31,30 @@ public:
 
 signals:
 	void signal_start();
+	void signal_startAfter();
 	void signal_closeWindow();
 
-	// �A�C�e���ǉ�
-	void signal_addItem( QTreeWidgetItem*, QTreeWidgetItem* );
-	void signal_selectDrive( QChar driveName );
+	/// 親アイテムに移動
+	void action_moveParent();
+
+	/// フォルダ容量を計算
+	void action_calcFolder();
+
+	void deleteFolder( const QString& fullPath );
+
+	/// ドライブの切り替え
+	void changeDrive( QChar driveName );
+
+	void setBrowseMode( int );
+
+	void uiViewL_addChild( ItemL*, ItemL*, bool bCurrent = false );
+	void uiViewL_sortItem();
+	void uiViewL_selectPath( QString path );
+
+	
+
+	/// 指定したアイテムにフォーカス
+	void uiViewL_focusItem( ItemL* );
 
 private:
 	class Impl;

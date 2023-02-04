@@ -1,30 +1,35 @@
-#include "ItemFileInfo.h"
+Ôªø#include "ItemFileInfo.h"
 
 
 //////////////////////////////////////////////////////////////////////////////////
 ItemFileInfo::ItemFileInfo( QTreeWidget* parent, const QString& _fullPath ) :
 	HTreeWidgetItem( parent ),
 	fullPath( _fullPath ),
-	fileInfo( _fullPath ) {
+	fileInfo( _fullPath ) 
+{
 
 }
 
 
 /////////////////////////////////////////
 bool ItemFileInfo::openFile() {
-	if( !fs::isExistFile( fullPath ) ) {
-		HLogView::error( u8"ÉtÉ@ÉCÉãÇ™å©Ç¬Ç©ÇËÇ‹ÇπÇÒ: " + fullPath );
-		return false;
+	if( fs::isExistFile( fullPath ) ) {
+		$::showInExplorer( fullPath );
+		return true;
 	}
-	$::showInExplorer( fullPath );
-	return true;
+	if( fs::isExistDirectory( fullPath ) ) {
+		$::showInExplorer( fullPath );
+		return true;
+	}
+	UIStatusBar::error( u8"openFile: Âá¶ÁêÜÂá∫Êù•„Åæ„Åõ„Çì„Åß„Åó„Åü" + fullPath );
+	return false;
 }
 
 
 
 /////////////////////////////////////////
 bool ItemFileInfo::showInExplorer() {
-	if( isFolder() || isRoot()) {
+	if( isFolder() || isRoot() ) {
 		if( !fs::isExistDirectory( fullPath ) )return false;
 		$::showInExplorer( fullPath );
 	}

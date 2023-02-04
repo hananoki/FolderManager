@@ -25,8 +25,8 @@ void Config::load() {
 		config.pos = QPoint( ( d.width() / 2 ) - ( config.size.width() / 2 ) , ( d.height() / 2 ) - ( config.size.height() / 2 ) );
 	}
 
-	if( config.driveLetter.isEmpty() ) {
-		config.driveLetter = "C";
+	if( config.driveLetter==0 ) {
+		config.driveLetter = 'C';
 	}
 }
 

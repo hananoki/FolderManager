@@ -4,7 +4,7 @@
 class ItemFileInfo : public HTreeWidgetItem {
 public:
 	QString fullPath;
-	QFileInfo fileInfo;
+	HFileInfo fileInfo;
 
 	/////////////////////////////////////////
 	ItemFileInfo( QTreeWidget* parent, const QString& _fullPath );
@@ -13,6 +13,7 @@ public:
 	bool isFolder();
 	bool isFile();
 	bool isRoot();
+	bool isSymbolicLink();
 
 	/////////////////////////////////////////
 	bool openFile();
@@ -38,4 +39,10 @@ bool ItemFileInfo::isFile() {
 inline
 bool ItemFileInfo::isRoot() {
 	return fileInfo.isRoot();
+}
+
+/////////////////////////////////////////
+inline
+bool ItemFileInfo::isSymbolicLink() {
+	return fileInfo.isSymbolicLink() | fileInfo.isJunction();
 }

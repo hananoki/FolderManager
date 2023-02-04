@@ -1,6 +1,8 @@
 QT       += core gui concurrent
-win32:QT += winextras
 
+equals(QT_MAJOR_VERSION, 5){
+  win32:QT += winextras
+}
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 CONFIG += c++17
@@ -21,6 +23,8 @@ CONFIG( debug, debug|release ) {
     win32:LIBS += -L../Qtlib/release -L../Qtlib/QtLibSound/release
 }
 
+CONFIG(release, debug|release): DEFINES += NDEBUG
+
 LIBS += Qtlib.lib
 
 RESOURCES += \
@@ -38,6 +42,8 @@ SOURCES += \
     src/ItemFileInfo.cpp \
     src/ItemL.cpp \
     src/ItemR.cpp \
+    src/SelectiHistory.cpp \
+    src/UIRowLinkItem.cpp \
     src/UIViewL.cpp \
     src/UIViewR.cpp \
     src/utils.cpp \
@@ -48,12 +54,15 @@ HEADERS += \
     src/App.h \
     src/Config.h \
     src/DriveCache.h \
+    src/Enums.h \
     src/FileDB.h \
     src/ActionFile.h \
     src/ContextMenu.h \
     src/ItemFileInfo.h \
     src/ItemL.h \
     src/ItemR.h \
+    src/SelectiHistory.h \
+    src/UIRowLinkItem.h \
     src/UIViewL.h \
     src/UIViewR.h \
     src/utils.h \
@@ -63,6 +72,7 @@ HEADERS += \
 FORMS += \
     src/UIDriveButton.ui \
     src/UIMainWindow.ui \
+    src/UIRowLinkItem.ui \
     src/UIViewL.ui \
     src/UIViewR.ui
 

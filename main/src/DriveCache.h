@@ -1,11 +1,16 @@
-#pragma once
+ï»¿#pragma once
 
-// ƒtƒHƒ‹ƒ_[‚Ìƒtƒ‹ƒpƒXAƒTƒCƒY
-using FileHash = QHash<QString, qint64>;
+struct SizeSet final {
+	qint64 folderFileSize;
+	qint64 fileSize;
+};
+
+// ãƒ•ã‚©ãƒ«ãƒ€ãƒ¼ã®ãƒ•ãƒ«ãƒ‘ã‚¹ã€ã‚µã‚¤ã‚º
+using FileHash = QHash<QString, SizeSet>;
 
 struct DriveCache final {
 public:
-	FileHash folderSize;
+	FileHash folderFileSize;
 
 	QHash<QString, QString> symbolicLink;
 
@@ -13,9 +18,9 @@ public:
 
 	static void write( DriveCache& dc, QChar driveName );
 
-	void set( const QString& fullPath, qint64 size );
+	void set( const QString& fullPath, qint64 folderSize, qint64 fileSize );
 	void setSymbolicLink( const QString& fullPath, const QString& targetPath );
 
-	qint64 get( const QString& fullPath );
+	SizeSet get( const QString& fullPath );
 };
 

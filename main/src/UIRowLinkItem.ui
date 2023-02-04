@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>UIDriveButton</class>
- <widget class="QWidget" name="UIDriveButton">
+ <class>UIRowLinkItem</class>
+ <widget class="QWidget" name="UIRowLinkItem">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>573</width>
-    <height>53</height>
+    <width>329</width>
+    <height>30</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -15,16 +15,16 @@
   </property>
   <layout class="QHBoxLayout" name="horizontalLayout">
    <property name="spacing">
-    <number>4</number>
+    <number>0</number>
    </property>
    <property name="leftMargin">
-    <number>4</number>
+    <number>0</number>
    </property>
    <property name="topMargin">
     <number>0</number>
    </property>
    <property name="rightMargin">
-    <number>4</number>
+    <number>0</number>
    </property>
    <property name="bottomMargin">
     <number>0</number>
@@ -36,23 +36,26 @@
      </property>
      <property name="sizeHint" stdset="0">
       <size>
-       <width>480</width>
+       <width>300</width>
        <height>20</height>
       </size>
      </property>
     </spacer>
    </item>
    <item>
-    <widget class="HFlatPushButton" name="pushButton_2">
-     <property name="text">
-      <string>環境変数</string>
-     </property>
-    </widget>
-   </item>
-   <item>
     <widget class="HFlatPushButton" name="pushButton">
      <property name="text">
-      <string>Qtについて</string>
+      <string/>
+     </property>
+     <property name="icon">
+      <iconset resource="res.qrc">
+       <normaloff>:/res/icon/link.png</normaloff>:/res/icon/link.png</iconset>
+     </property>
+     <property name="iconSize">
+      <size>
+       <width>14</width>
+       <height>14</height>
+      </size>
      </property>
     </widget>
    </item>
@@ -65,6 +68,8 @@
    <header>HFlatPushButton.h</header>
   </customwidget>
  </customwidgets>
- <resources/>
+ <resources>
+  <include location="res.qrc"/>
+ </resources>
  <connections/>
 </ui>

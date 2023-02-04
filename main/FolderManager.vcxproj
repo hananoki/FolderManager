@@ -220,8 +220,10 @@
     <ClCompile Include="src\ItemFileInfo.cpp" />
     <ClCompile Include="src\ItemL.cpp" />
     <ClCompile Include="src\ItemR.cpp" />
+    <ClCompile Include="src\SelectiHistory.cpp" />
     <ClCompile Include="src\UIDriveButton.cpp" />
     <ClCompile Include="src\UIMainWindow.cpp" />
+    <ClCompile Include="src\UIRowLinkItem.cpp" />
     <ClCompile Include="src\UIViewL.cpp" />
     <ClCompile Include="src\UIViewR.cpp" />
     <ClCompile Include="src\utils.cpp" />
@@ -234,14 +236,19 @@
     </QtMoc>
     <ClInclude Include="src\ContextMenu.h" />
     <ClInclude Include="src\DriveCache.h" />
+    <ClInclude Include="src\Enums.h" />
     <QtMoc Include="src\FileDB.h">
     </QtMoc>
     <ClInclude Include="src\ItemFileInfo.h" />
     <ClInclude Include="src\ItemL.h" />
     <ClInclude Include="src\ItemR.h" />
+    <QtMoc Include="src\SelectiHistory.h">
+    </QtMoc>
     <QtMoc Include="src\UIDriveButton.h">
     </QtMoc>
     <QtMoc Include="src\UIMainWindow.h">
+    </QtMoc>
+    <QtMoc Include="src\UIRowLinkItem.h">
     </QtMoc>
     <QtMoc Include="src\UIViewL.h">
     </QtMoc>
@@ -348,6 +355,8 @@ echo #include "pch.h"&gt;&gt;src\pch.h.cpp</Command>
     </QtUic>
     <QtUic Include="src\UIMainWindow.ui">
     </QtUic>
+    <QtUic Include="src\UIRowLinkItem.ui">
+    </QtUic>
     <QtUic Include="src\UIViewL.ui">
     </QtUic>
     <QtUic Include="src\UIViewR.ui">
@@ -356,22 +365,22 @@ echo #include "pch.h"&gt;&gt;src\pch.h.cpp</Command>
   <ItemGroup>
     <None Include="src\icon\AppIcon.ico" />
     <None Include="src\markdown\about.md" />
+    <None Include="src\icon\arrowL2.png" />
+    <None Include="src\icon\arrowR2.png" />
+    <None Include="src\icon\arrowU2.png" />
     <None Include="src\icon\driveFind.png" />
-    <None Include="src\icon\editor.png" />
     <None Include="src\icon\folder.png" />
+    <None Include="src\icon\garbageCan.png" />
     <None Include="src\icon\icon_159120_16.png" />
-    <None Include="src\icon\info.png" />
     <None Include="src\icon\info2.png" />
     <None Include="src\icon\internet.png" />
-    <None Include="src\icon\localize.png" />
-    <None Include="src\icon\minus.png" />
-    <None Include="src\icon\plus.png" />
+    <None Include="src\icon\link.png" />
+    <None Include="src\icon\linkC.png" />
+    <None Include="src\icon\menu.png" />
     <None Include="src\icon\reload.png" />
     <QtRcc Include="src\res.qrc">
     </QtRcc>
-    <None Include="src\icon\run.png" />
     <None Include="src\icon\settings.png" />
-    <None Include="src\icon\settings2.png" />
     <None Include="src\style.qss" />
   </ItemGroup>
   <ItemGroup>

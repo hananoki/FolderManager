@@ -13,7 +13,14 @@ public:
 	ItemL( QTreeWidget* parent, const QString& _fullPath );
 
 	/////////////////////////////////////////
-	void makeChild();
+	void makeChild( bool bInit = false );
+
+
+	/////////////////////////////////////////
+	void selectPath( const QString& path );
+
+	/////////////////////////////////////////
+	void deletePath( const QString& path );
 };
 
 

@@ -1,28 +1,27 @@
-#include "FileDB.h"
+Ôªø#include "FileDB.h"
 #include "UIMainWindow.h"
 
 #include "UIStatusBar.h"
+#include "UIMainWindow.h"
 
 FileDB fileDB;
 
+//////////////////////////////////////////////////////////////////////////////////
 struct Folder {
 	QString fullPath;
-	qint64 folderSize;
+	qint64 folderFileSize;
 
 	/////////////////////////////////////////
 	Folder( const QString& _fullPath ) :
 		fullPath( _fullPath ),
-		folderSize( -1 ) {
+		folderFileSize( -1 ) {
 
 	}
+
 
 	/////////////////////////////////////////
 	void calcSize( QFutureWatcher<void>& watcher ) {
 		QList<Folder*> lst;
-
-		if( fullPath == "O:/Asset Store-5.x" ) {
-			qDebug() << "";
-		}
 
 		fs::enumerateDirectories( fullPath, "*", SearchOption::TopDirectoryOnly, QDir::Hidden, [&]( const QString& pathName ) {
 			watcher.progressTextChanged( pathName );
@@ -36,7 +35,11 @@ struct Folder {
 			if( finfo.isShortcut() ) {
 				return true;
 			}
-			if( b1 || b2 || b4 ) {
+			if( b4 ) {
+				fileDB.setSymbolicLink( pathName, $::junctionTarget( pathName ) );
+				return true;
+			}
+			if( b1 || b2 ) {
 				fileDB.setSymbolicLink( pathName, finfo.symLinkTarget() );
 				return true;
 			}
@@ -47,22 +50,21 @@ struct Folder {
 			return true;
 		} );
 
-		if( fullPath == "O:/Asset Store-5.x" ) {
-			qDebug() << "";
-		}
-
-		folderSize = 0;
+		folderFileSize = 0;
 
 		for( auto& p : lst ) {
-			folderSize += p->folderSize;
+			folderFileSize += p->folderFileSize;
 		}
 
+		qint64 fileSize = 0;
 		fs::enumerateFiles( fullPath, "*", SearchOption::TopDirectoryOnly, QDir::Hidden, [&]( const QString& pathName ) {
-			folderSize += QFileInfo( pathName ).size();
+			auto sz = QFileInfo( pathName ).size();;
+			fileSize += sz;
+			folderFileSize += sz;
 			return true;
 		} );
 
-		fileDB.setSize( fullPath, folderSize );
+		fileDB.setSize( fullPath, folderFileSize, fileSize );
 	}
 };
 
@@ -75,15 +77,16 @@ public:
 
 	QFuture<void> future;
 	QFutureWatcher<void> watcher;
+	QFuture<void> future2;
+	QFutureWatcher<void> watcher2;
 
 	QFuture<void> futureInit;
 	QFutureWatcher<void> watcherInit;
 
 	QHash<QChar, DriveCache> sizeMap;
 
-	//FileHash calcSize;
 
-	QString analizeDriveName;
+	QChar analizeDriveName; /// ‰øùÂ≠òÂêç„Å´‰ΩøÁî®
 
 	/////////////////////////////////////////
 	Impl( self_t* _self ) :
@@ -91,6 +94,7 @@ public:
 
 		/////////////////////////////////////////
 		connect( &watcher, &QFutureWatcher<void>::progressTextChanged, self, std::bind( &Impl::watcher_progressTextChanged, this, std::placeholders::_1 ) );
+		connect( &watcher2, &QFutureWatcher<void>::progressTextChanged, self, std::bind( &Impl::watcher_progressTextChanged, this, std::placeholders::_1 ) );
 
 		/////////////////////////////////////////
 		connect( &watcher, &QFutureWatcher<void>::finished, self, std::bind( &Impl::watcher_finished, this ) );
@@ -113,7 +117,7 @@ public:
 
 	/////////////////////////////////////////
 	void watcherInit_finished() {
-		UIStatusBar::info( u8"ÉLÉÉÉbÉVÉÖÉfÅ[É^Çì«Ç›çûÇ›Ç‹ÇµÇΩ" );
+		emit self->completeFileLoad();
 	}
 
 
@@ -125,7 +129,7 @@ public:
 
 	/////////////////////////////////////////
 	void watcher_finished() {
-		DriveCache::write( sizeMap[ analizeDriveName[ 0 ] ], analizeDriveName[ 0 ] );
+		DriveCache::write( sizeMap[ analizeDriveName ], analizeDriveName );
 
 		emit self->completeAnalize();
 	}
@@ -147,34 +151,72 @@ public:
 		return ( *it );
 	}
 
+	/////////////////////////////////////////
+	void driveCache( std::function<void( DriveCache& )> cb ) {
+		for( auto& v : sizeMap.keys() ) {
+			cb( sizeMap[ v ] );
+		}
+	}
 
 	/////////////////////////////////////////
 	//void set( const QFileInfo& finfo ) {
-	//	set( finfo.filePath(), finfo.size() );
+	//	set( finfo.filePath(), finfo.folderSize() );
 	//}
 
 
 	/////////////////////////////////////////
-	void set( const QString& fullPath, qint64 size ) {
-		driveCache( fullPath ).set( fullPath, size );
+	void set( const QString& fullPath, qint64 folderSize, qint64 fileSize ) {
+		driveCache( fullPath ).set( fullPath, folderSize, fileSize );
 	}
 
 
 	/////////////////////////////////////////
-	void analize( const QString& driveName ) {
+	void analize( const QString& fullPath ) {
 		qtWindow->statusBar()->info( u8"analize" );
 
-		analizeDriveName = driveName;
-		auto dname = driveName + ":/";
+		analizeDriveName = fullPath[ 0 ];
 
-		future = QtConcurrent::run( [this, dname]() {
-			auto f = Folder( dname );
-			//calcSize.clear();
-			f.calcSize( watcher );
-		} );
-		watcher.setFuture( future );
+		QFileInfo fi( fullPath );
 
-		emit self->startAnalize();
+		// „Éâ„É©„Ç§„Éñ„ÅÆ„É´„Éº„ÉàÂÖ®‰ΩìÊõ¥Êñ∞
+		if( fi.isRoot() ) {
+
+			future = QtConcurrent::run( [this, fullPath]() {
+				auto f = Folder( fullPath );
+				//calcSize.clear();
+				f.calcSize( watcher );
+			} );
+			watcher.setFuture( future );
+
+			emit self->startAnalize();
+		}
+		else {
+			future = QtConcurrent::run( [this, fullPath]() {
+				auto f = Folder( fullPath );
+				//calcSize.clear();
+				f.calcSize( watcher2 );
+
+				auto paths = fullPath.split( "/" );
+				paths.takeLast();
+				while( !paths.isEmpty() ) {
+					auto dname = paths.join( "/" );
+
+					qint64 size = 0;
+					auto ds = fs::getDirectories( dname, "*" );
+					for( auto& dn : ds ) {
+						size += fileDB.get( dn );
+					}
+					SizeSet ss = fileDB.getSizeSet( dname );
+					size += ss.fileSize;
+					fileDB.setSize( dname, size, ss.fileSize );
+					paths.takeLast();
+				}
+			} );
+			watcher.setFuture( future );
+			//future2.waitForFinished();
+
+			emit self->startAnalize();
+		}
 	}
 
 
@@ -198,31 +240,36 @@ public:
 
 
 //////////////////////////////////////////////////////////////////////////////////
-FileDB::FileDB() :
-	impl( new Impl( this ) ) {
+FileDB::FileDB() {
 
 }
 
 
-/////////////////////////////////////////
-//void FileDB::set( const QFileInfo& finfo ) {
-//	impl->set( finfo );
-//}
+//////////////////////////////////////////////////////////////////////////////////
+void FileDB::init() {
+	impl = std::make_unique<Impl>( this );
+}
+
 
 /////////////////////////////////////////
-void FileDB::setSize( const QString& fullPath, qint64 size ) {
-	impl->set( fullPath, size );
+void FileDB::setSize( const QString& fullPath, qint64 folderSize, qint64 fileSize ) {
+	impl->set( fullPath, folderSize, fileSize );
 }
+
 
 /////////////////////////////////////////
 qint64 FileDB::get( const QString& fullPath ) {
+	return getSizeSet( fullPath ).folderFileSize;
+}
+
+/////////////////////////////////////////
+SizeSet FileDB::getSizeSet( const QString& fullPath ) {
 	return impl->driveCache( fullPath ).get( fullPath );
 }
 
-
 /////////////////////////////////////////
-void FileDB::analize( const QString& driveName ) {
-	impl->analize( driveName );
+void FileDB::analize( const QString& fullPath ) {
+	impl->analize( fullPath );
 }
 
 
@@ -246,12 +293,17 @@ DriveCache& FileDB::driveCache( QChar drive ) {
 
 /////////////////////////////////////////
 QStringList FileDB::symbolicLinkSource( const QString& fullPath ) {
-	auto& dr = impl->driveCache( fullPath[0] );
 	QStringList result;
-	for( auto& f : dr.symbolicLink.keys() ) {
-		if( dr.symbolicLink[ f ] == fullPath ) {
-			result << f;
+	impl->driveCache( [&result, fullPath]( DriveCache& dr ) {
+		for( auto& f : dr.symbolicLink.keys() ) {
+			if( dr.symbolicLink[ f ] == fullPath ) {
+				result << f;
+			}
 		}
-	}
+	} );
+
+	//auto& dr = impl->driveCache( fullPath[0] );
+
+
 	return result;
 }

@@ -1,7 +1,6 @@
 ﻿#include "App.h"
 #include "UIMainWindow.h"
-#include "HLogView.h"
-
+#include "FileDB.h"
 
 //////////////////////////////////////////////////////////////////////////////////
 class App::Impl {
@@ -13,12 +12,16 @@ public:
 	Impl( App* _self )
 		: self( _self ) {
 
+		
 	}
 
 
 	/////////////////////////////////////////
 	~Impl() {
 	}
+
+	
+	
 
 
 	/////////////////////////////////////////
@@ -87,11 +90,11 @@ App::~App() {
 //QtMsgType { QtDebugMsg, QtWarningMsg, QtCriticalMsg, QtFatalMsg, QtInfoMsg, QtSystemMsg = QtCriticalMsg };
 void logHandler( QtMsgType type, const QMessageLogContext& context, const QString& msg ) {
 	const auto& message = qFormatLogMessage( type, context, msg );
-	switch( type ) {
-		default:
-			HLogView::info( msg );
-			break;
-	}
+	//switch( type ) {
+	//	default:
+	//		HLogView::info( msg );
+	//		break;
+	//}
 
 	//QTextStream cerr( stderr );
 	//cerr << message << endl;
@@ -105,8 +108,8 @@ void logHandler( QtMsgType type, const QMessageLogContext& context, const QStrin
 
 
 int main( int argc, char* argv[] ) {
-	//qInstallMessageHandler( logHandler );
-	//qSetMessagePattern( "[%{time yyyy-MM-dd hh:mm:ss}] [%{category}] [%{threadid}] %{file}:%{line} => %{message} " );
+	qInstallMessageHandler( logHandler );
+	qSetMessagePattern( "[%{time yyyy-MM-dd hh:mm:ss}] [%{category}] [%{threadid}] %{file}:%{line} => %{message} " );
 	App app( argc, argv );
 	return app.impl->run();
 }

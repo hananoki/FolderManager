@@ -51,6 +51,7 @@ namespace utils {
 				( *contextMenu )->addAction<ActionCopyFileName>( treeWidget );
 				( *contextMenu )->addSeparator();
 				( *contextMenu )->addAction<ActionDelete>( treeWidget );
+				( *contextMenu )->addAction<ActionRename>( treeWidget );
 				( *contextMenu )->addSeparator();
 				( *contextMenu )->addAction<ActionShowProperty>( treeWidget );
 			}

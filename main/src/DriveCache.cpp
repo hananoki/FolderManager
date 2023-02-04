@@ -1,23 +1,39 @@
 #include "DriveCache.h"
+#include "FileDB.h"
+
+#define MAKE_SIG(n1,n2,n3,n4)  n4 | (n3<<8) | (n2<<16)| (n1<<24)
+static const quint32 FFDB = MAKE_SIG( 'F', 'F', 'D', 'B' );
+static const quint32 VER = MAKE_SIG( 'V', '1', '0', '1' );
+
+inline
+QDataStream& operator<<( QDataStream& out, SizeSet& hash ) {
+	out << hash.folderFileSize << hash.fileSize;
+	return out;
+}
+
+inline
+QDataStream& operator>>( QDataStream& in, SizeSet& hash ) {
+	in >> hash.folderFileSize >> hash.fileSize;
+	return in;
+}
 
 inline
 QDataStream& operator<<( QDataStream& out, DriveCache& hash ) {
-	//QHashIterator<QString, qint64 > i( hash );
-	//
-	//while( i.hasNext() ) {
-	//	i.next();
-	//	auto cKey = i.key();
-	//	out << cKey << i.value();
-	//}
-	out << hash.folderSize.keys().length();
 
-	auto it = hash.folderSize.begin();
-	auto ed = hash.folderSize.end();
+	out << FFDB;
+	out << VER;
+
+	int keysXount = hash.folderFileSize.keys().length();
+	out << keysXount;
+
+	auto it = hash.folderFileSize.begin();
+	auto ed = hash.folderFileSize.end();
 	for( ; it != ed; it++ ) {
 		out << it.key() << it.value();
 	}
 
-	out << hash.symbolicLink.keys().length();
+	int num2 = hash.symbolicLink.keys().length();
+	out << num2;
 
 	qDebug() << "----------";
 	auto it2 = hash.symbolicLink.begin();
@@ -32,19 +48,33 @@ QDataStream& operator<<( QDataStream& out, DriveCache& hash ) {
 
 inline
 QDataStream& operator>>( QDataStream& in, DriveCache& hash ) {
-	//hash.clear(); // clear possible items
+
+	quint32 sig;
+	in >> sig;
+	if( sig != FFDB ) {
+		throw - 1;
+	}
+	quint32 ver;
+	in >> ver;
+	if( ver != VER ) {
+		throw - 2;
+	}
+
 	int num1 = 0;
 	in >> num1;
 
 	QString cKey;
-	qint64 cMyCls;
+	SizeSet cMyCls;
+
+	hash.folderFileSize.reserve( num1 * 2 );
 
 	for( int i = 0; i < num1; i++ ) {
 		in >> cKey >> cMyCls;
 		if( !cKey.isEmpty() ) { // prohibits the last empty one
-			hash.folderSize.insert( cKey, cMyCls );
+			hash.folderFileSize.insert( cKey, cMyCls );
 		}
 	}
+	//qDebug() <<hash.folderFileSize.capacity();
 	//while( !in.status() ) { // while not finished or corrupted
 	//	
 	//}
@@ -66,11 +96,14 @@ QDataStream& operator>>( QDataStream& in, DriveCache& hash ) {
 
 /////////////////////////////////////////
 void DriveCache::read( DriveCache& dc, const QString& filePath ) {
-	//FileHash fh;
-	binarySerializer::read( filePath, [&dc]( QDataStream& in ) {
-		in >> dc;
-	} );
-	//folderSize = std::move( fh );
+	try {
+		binarySerializer::read( filePath, [&dc]( QDataStream& in ) {
+			in >> dc;
+		} );
+	}
+	catch( int code ) {
+		emit fileDB.errorCache( path::getFileName( filePath ) );
+	}
 }
 
 
@@ -83,23 +116,23 @@ void DriveCache::write( DriveCache& dc, QChar driveName ) {
 
 
 /////////////////////////////////////////
-void DriveCache::set( const QString& fullPath, qint64 size ) {
-	auto it = folderSize.find( fullPath );
+void DriveCache::set( const QString& fullPath, qint64 folderSize, qint64 fileSize ) {
+	auto it = folderFileSize.find( fullPath );
 
-	if( it == folderSize.constEnd() ) {
-		folderSize.insert( fullPath, size );
+	if( it == folderFileSize.constEnd() ) {
+		folderFileSize.insert( fullPath, SizeSet{ folderSize,fileSize } );
 	}
 	else {
-		( *it ) = size;
+		( *it ) = SizeSet{ folderSize,fileSize };
 	}
 }
 
 
 /////////////////////////////////////////
-qint64 DriveCache::get( const QString& fullPath ) {
-	auto it = folderSize.find( fullPath );
-	if( it == folderSize.constEnd() ) {
-		return 0;
+SizeSet DriveCache::get( const QString& fullPath ) {
+	auto it = folderFileSize.find( fullPath );
+	if( it == folderFileSize.constEnd() ) {
+		return SizeSet{ 0 ,0 };
 	}
 	return ( *it );
 }
@@ -107,7 +140,7 @@ qint64 DriveCache::get( const QString& fullPath ) {
 
 /////////////////////////////////////////
 void DriveCache::setSymbolicLink( const QString& fullPath, const QString& targetPath ) {
-	qDebug() << $$("in: %1 : %2").arg( fullPath ).arg( targetPath );
+	qDebug() << $$( "in: %1 : %2" ).arg( fullPath ).arg( targetPath );
 	auto it = symbolicLink.find( fullPath );
 	if( it == symbolicLink.constEnd() ) {
 		symbolicLink.insert( fullPath, targetPath );

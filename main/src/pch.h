@@ -4,8 +4,9 @@
 #include <QApplication> // Qt includes
 #include <QDebug>
 #include <QMessageBox>
+#if (QT_VERSION < QT_VERSION_CHECK(6, 0, 0))
 #include <QDesktopWidget>
-
+#endif
 #include <QPushButton>
 #include <QToolButton>
 #include <QLabel>

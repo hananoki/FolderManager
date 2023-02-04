@@ -8,6 +8,16 @@ QWidget {
 	/**/
 }
 
+QMainWindow {
+	background-color: #FFF;
+}
+
+QToolBar {
+	background-color: #F5F6F7;
+	border-top: 1px solid #E8E9EA;
+	border-bottom: 1px solid #E8E9EA;
+}
+
 /**/
 QAbstractItemView {
   alternate-background-color: #F4F4F4;

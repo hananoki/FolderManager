@@ -36,7 +36,7 @@ public:
 class ActionDelete : public QAction {
 public:
 	ActionDelete( HTreeWidget* tw );
-	static ActionDelete* create( HTreeWidget* p ) { return new ActionDelete( p ); }
+	static ActionDelete* create( HTreeWidget* p );
 
 	HTreeWidget* treeWidget;
 };
@@ -69,10 +69,19 @@ public:
 	static Action_Analize* create( HTreeWidget* p ) { return new Action_Analize( p ); }
 };
 
+
 //////////////////////////////////////////////////////////////////////////////////
-class Action_RemoveFolder : public QAction {
+class Action_ShowTargetPath : public QAction {
 public:
-	Action_RemoveFolder( HTreeWidget* tw );
-	static Action_RemoveFolder* create( HTreeWidget* p );
+	Action_ShowTargetPath( HTreeWidget* tw );
+	static Action_ShowTargetPath* create( HTreeWidget* p ) { return new Action_ShowTargetPath( p ); }
 };
 
+
+//////////////////////////////////////////////////////////////////////////////////
+class Action_LnkFile : public QAction {
+public:
+	QString filePath;
+	Action_LnkFile( HTreeWidget* tw, const QString& filePath );
+	static Action_LnkFile* create( HTreeWidget* p, const QString& filePath ) { return new Action_LnkFile( p, filePath ); }
+};

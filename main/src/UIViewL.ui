@@ -18,37 +18,17 @@
     <number>0</number>
    </property>
    <property name="leftMargin">
-    <number>0</number>
+    <number>2</number>
    </property>
    <property name="topMargin">
-    <number>0</number>
+    <number>2</number>
    </property>
    <property name="rightMargin">
     <number>0</number>
    </property>
    <property name="bottomMargin">
-    <number>0</number>
+    <number>2</number>
    </property>
-   <item>
-    <widget class="QToolBar" name="toolBar">
-     <property name="windowTitle">
-      <string>toolBar</string>
-     </property>
-     <property name="movable">
-      <bool>false</bool>
-     </property>
-     <property name="iconSize">
-      <size>
-       <width>14</width>
-       <height>14</height>
-      </size>
-     </property>
-     <property name="toolButtonStyle">
-      <enum>Qt::ToolButtonIconOnly</enum>
-     </property>
-     <addaction name="actionUp"/>
-    </widget>
-   </item>
    <item>
     <widget class="HTreeWidget" name="treeWidget">
      <property name="alternatingRowColors">
@@ -58,6 +38,9 @@
       <number>16</number>
      </property>
      <property name="uniformRowHeights">
+      <bool>true</bool>
+     </property>
+     <property name="sortingEnabled">
       <bool>true</bool>
      </property>
      <property name="headerHidden">
@@ -76,7 +59,7 @@
   </layout>
   <action name="actionUp">
    <property name="icon">
-    <iconset resource="res.qrc">
+    <iconset>
      <normaloff>:/res/icon/up4.png</normaloff>:/res/icon/up4.png</iconset>
    </property>
    <property name="text">
@@ -91,8 +74,6 @@
    <header>HTreeWidget.h</header>
   </customwidget>
  </customwidgets>
- <resources>
-  <include location="res.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>

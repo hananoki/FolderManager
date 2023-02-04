@@ -15,6 +15,7 @@ public:
 	virtual ~App();
 
 signals:
+	
 
 public:
 	class Impl;
