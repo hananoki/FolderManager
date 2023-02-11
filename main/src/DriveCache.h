@@ -1,5 +1,6 @@
 ﻿#pragma once
 
+//////////////////////////////////////////////////////////////////////////////////
 struct SizeSet final {
 	qint64 folderFileSize;
 	qint64 fileSize;
@@ -8,6 +9,7 @@ struct SizeSet final {
 // フォルダーのフルパス、サイズ
 using FileHash = QHash<QString, SizeSet>;
 
+//////////////////////////////////////////////////////////////////////////////////
 struct DriveCache final {
 public:
 	FileHash folderFileSize;
@@ -22,5 +24,7 @@ public:
 	void setSymbolicLink( const QString& fullPath, const QString& targetPath );
 
 	SizeSet get( const QString& fullPath );
+
+	bool isEmpty();
 };
 

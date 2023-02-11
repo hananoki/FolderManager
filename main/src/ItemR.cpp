@@ -5,7 +5,7 @@
 
 
 //////////////////////////////////////////////////////////////////////////////////
-ItemR::ItemR( QTreeWidget* parent, const QString& _fullPath, bool bFullName /*= false*/ ) :
+ItemR::ItemR( HTreeWidget* parent, const QString& _fullPath, bool bFullName /*= false*/ ) :
 	ItemFileInfo( parent, _fullPath ),
 	size( -1 ) {
 
@@ -27,7 +27,7 @@ ItemR::ItemR( QTreeWidget* parent, const QString& _fullPath, bool bFullName /*= 
 			//auto te = text(0);
 			if( b4 ) {
 				setText( eType, u8"ジャンクション" );
-				setText( eName, $$( "%1 (%2)" ).arg( path::getFileName( fullPath ) ).arg( fileInfo.linkTarget() ) );
+				setText( eName, $$( "%1 [%2]" ).arg( path::getFileName( fullPath ) ).arg( fileInfo.linkTarget() ) );
 			}
 			else if( b3 ) {
 				setText( eType, u8"ショートカット" );
@@ -65,13 +65,30 @@ ItemR::ItemR( QTreeWidget* parent, const QString& _fullPath, bool bFullName /*= 
 		//setText( 1, $::toString( QFileInfo( fullPath ).size() ) );
 		setTextAlignment( eSize, Qt::AlignRight );
 	}
+
+	enableEdit();
+}
+
+
+/////////////////////////////////////////
+void ItemR::updateSize() {
+	if( fs::isExistDirectory( fullPath ) ) {
+		if( !fileInfo.isLink() ) {
+			size = fileDB.get( fullPath );
+			setText( eSize, $::toStringFileSize( size ) );
+		}
+	}
+	else {
+		size = fileInfo.size();
+		setText( eSize, $::toStringFileSize( size ) );
+	}
 }
 
 
 /////////////////////////////////////////
 bool ItemR::openFile() {
 	if( !fs::isExistFile( fullPath ) ) {
-		HLogView::error( u8"ファイルが見つかりません: " + fullPath );
+		UIStatusBar::error( u8"ファイルが見つかりません: " + fullPath );
 		return false;
 	}
 	$::showInExplorer( fullPath );
@@ -91,33 +108,21 @@ QString ItemR::folderPath() {
 }
 
 
+/////////////////////////////////////////
+bool ItemR::rename() {
+	auto newName = $$( "%1/%2" ).arg( path::getDirectoryName( fullPath ).replace( QRegExp( "/$" ), "" ) ).arg( text( 0 ) );
 
-
-//////////////////////////////////////////////////////////////////////////////////
-ItemSymLink::ItemSymLink( QTreeWidget* parent, const QString& _fullPath, const QString& _targegtPath ) :
-	ItemFileInfo( parent, _fullPath ),
-	targegtPath( _targegtPath ) {
-
-	setText( 0, _fullPath );
-	setIcon( 0, icon::get( _fullPath ) );
-
-	QFileInfo fi( _fullPath );
-	if( fi.isJunction() ) {
-		setText( 1, u8"ジャンクション" );
-	}
-	else if( fi.isShortcut() ) {
-		setText( 1, u8"ショートカット" );
+	if( fs::mv( fullPath, newName ) ) {
+		fullPath = newName;
+		UIStatusBar::info( "リネームしました: " + newName );
+		return true;
 	}
 	else {
-		setText( 1, u8"シンボリックリンク" );
+		UIStatusBar::error( "リネーム出来ませんでした: " + newName );
 	}
-
-	setText( 2, _targegtPath );
-
-	if( !fs::isExistDirectory( _targegtPath ) ) {
-		setBackgroundColor( 2, QColor( "#FBB" ) );
-	}
-	//else {
-	setIcon( 2, icon::get( _targegtPath ) );
-	//}
+	return false;
 }
+
+
+
+

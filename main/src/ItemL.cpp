@@ -4,57 +4,63 @@
 
 #include "UIMainWindow.h"
 #include "UIViewL.h"
+#include "UIRowLinkItem.h"
 
 using namespace cpplinq;
 
 //////////////////////////////////////////////////////////////////////////////////
-ItemL::ItemL( QTreeWidget* parent, const QString& _fullPath ) :
-	ItemFileInfo( parent, _fullPath ),
-	mkChild( false ) {
+ItemL::ItemL( HTreeWidget* parent, const QString& _fullPath ) :
+	ItemFileInfo( parent, _fullPath ) {
 
-	setText( 0, fileInfo.isRoot() ? fullPath : path::getFileName( fullPath ) );
-	
+	setCache( _fullPath, this );
+
+	setText( 0, fileInfo.isRoot() ?
+		$$( "%1 (%2:)" ).arg( fs::volumeName( fullPath ) ).arg( fullPath[ 0 ] ) :
+		path::getFileName( fullPath ) );
+
 	if( fileInfo.isLink() ) {
 		setIcon( 0, ICON_FOLDER );
-		reference = true;
 	}
 	else {
 		setIcon( 0, icon::get( fullPath ) );
-		reference = false;
-	}
-
-	auto lst = fileDB.symbolicLinkSource( fullPath );
-	if( 0 < lst.length() ) {
-		setIcon( 1, QIcon( ":/res/icon/link.png" ) );
 	}
 }
 
 
 /////////////////////////////////////////
-void ItemL::makeChild( bool bInit /*= false*/ ) {
-	if( reference )return;
-	if( mkChild )return;
+/**
+ * @brief  子アイテムを作成する
+ * @param  bInit ドライブルート用、ルートの場合、生成した子アイテムの子も作る
+ * @param  同期モード、同期処理でaddChildする場合、まとめてaddChildrenするほうがソート回数が減るため早くなる
+ */
+void ItemL::makeChild( bool bInit /*= false*/, bool syncMode /*= false*/ ) {
+	if( isReference() )return;
 
-	int count = 0;
+	//int count = 0;
 	QList<QTreeWidgetItem*> items;
 	fs::enumerateDirectories( fullPath, "*", SearchOption::TopDirectoryOnly, QDir::Hidden, [&]( const QString& pathName ) {
-		auto* fitem = find<ItemL>( path::getFileName( pathName ) );
-		if( fitem )return true;
 
-		auto* p = new ItemL( nullptr, pathName );
+		if( getCached( pathName ) )return true;
 
-		//emit qtWindow->uiViewL_addChild( this, p );
-		//addChild( p );
-		items << p;
+		auto* p = new ItemL( tw, pathName );
+
+		if( syncMode ) {
+			items << p;
+		}
+		else {
+			qtWindow->uiViewL()->addChild( this, p );
+		}
 
 		if( bInit ) {
 			p->makeChild();
 		}
-		count++;
+		//count++;
 		return true;
 	} );
-	addChildren( items );
 
+	if( syncMode ) {
+		addChildren( items );
+	}
 }
 
 
@@ -68,25 +74,28 @@ void ItemL::selectPath( const QString& path ) {
 	auto paths = from( path.split( "/" ) )
 		>> where( []( const auto& s ) { return !s.isEmpty(); } )
 		>> to_qlist();
-		
+
 	QString tPath = paths.takeFirst();
 	auto* itemL = this;
 
 	while( !paths.isEmpty() ) {
 		auto dname = paths.takeFirst();
-		auto* child = itemL->find<ItemL>( dname );
 		tPath = $$( "%1/%2" ).arg( tPath ).arg( dname );
+		auto* child = getCached( tPath );
 		if( !fs::isExistDirectory( tPath ) ) {
 			break;
 		}
 		if( !child ) {
-			child = new ItemL( nullptr, tPath );
-			//emit qtWindow->uiViewL_addChild( itemL, child, true );
-			itemL->addChild( child );
+			child = new ItemL( tw, tPath );
+			qtWindow->uiViewL()->addChild( itemL, child );
+			//itemL->addChild( child );
 		}
 		itemL = child;
 	}
-	emit qtWindow->uiViewL_focusItem( itemL );
+
+	if( !QFileInfo( path ).isRoot() ) {
+		//emit qtWindow->uiViewL()->focusItem( itemL );
+	}
 }
 
 
@@ -116,5 +125,26 @@ void ItemL::deletePath( const QString& path ) {
 		}
 		itemL = child;
 	}
-	itemL->setHidden(true);
+	itemL->setHidden( true );
+}
+
+
+/////////////////////////////////////////
+void ItemL::addLinkWidget() {
+	auto lst = fileDB.symbolicLinkSource( fullPath );
+	if( 0 < lst.length() ) {
+		auto* bb = new UIRowLinkItem( tw, lst );
+		tw->setItemWidget( this, 0, bb );
+	}
+}
+
+
+/////////////////////////////////////////
+void ItemL::setCache( const QString& path, ItemL* item ) {
+	qtWindow->uiViewL()->setCache( path, item );
+}
+
+/////////////////////////////////////////
+ItemL* ItemL::getCached( const QString& path ) {
+	return qtWindow->uiViewL()->getCached( path );
 }

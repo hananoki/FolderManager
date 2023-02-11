@@ -2,26 +2,25 @@
 #include "UIMainWindow.h"
 #include "FileDB.h"
 
+#ifdef Q_OS_WIN
+#include <QtWin>
+#endif
+
 //////////////////////////////////////////////////////////////////////////////////
 class App::Impl {
 public:
 	App* self;
 	
-
 	///////////////////////////////////////////
 	Impl( App* _self )
 		: self( _self ) {
 
-		
 	}
 
 
 	/////////////////////////////////////////
 	~Impl() {
 	}
-
-	
-	
 
 
 	/////////////////////////////////////////
@@ -108,7 +107,15 @@ void logHandler( QtMsgType type, const QMessageLogContext& context, const QStrin
 
 
 int main( int argc, char* argv[] ) {
-	qInstallMessageHandler( logHandler );
+//#ifdef Q_OS_WIN
+//	HRESULT hr;
+//	hr = CoInitializeEx( 0, COINIT_MULTITHREADED );
+//	if( FAILED( hr ) ) {
+//		qDebug() << hr;
+//	}
+//	//CoInitialize( NULL );
+//#endif
+	//qInstallMessageHandler( logHandler );
 	qSetMessagePattern( "[%{time yyyy-MM-dd hh:mm:ss}] [%{category}] [%{threadid}] %{file}:%{line} => %{message} " );
 	App app( argc, argv );
 	return app.impl->run();

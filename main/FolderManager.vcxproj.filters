@@ -74,13 +74,25 @@
     <ClCompile Include="src\ItemR.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\ItemSymLink.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="src\SelectiHistory.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\TreeViewFileBrowse.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\TreeViewSymLink.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\UIDriveButton.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\UIMainWindow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\UIPanelInfo.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\UIRowLinkItem.cpp">
@@ -112,13 +124,25 @@
     <ClInclude Include="src\ItemL.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\ItemR.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
     <QtMoc Include="src\SelectiHistory.h">
+      <Filter>Source Files</Filter>
+    </QtMoc>
+    <QtMoc Include="src\TreeViewFileBrowse.h">
+      <Filter>Source Files</Filter>
+    </QtMoc>
+    <QtMoc Include="src\TreeViewSymLink.h">
       <Filter>Source Files</Filter>
     </QtMoc>
     <QtMoc Include="src\UIDriveButton.h">
       <Filter>Source Files</Filter>
     </QtMoc>
     <QtMoc Include="src\UIMainWindow.h">
+      <Filter>Source Files</Filter>
+    </QtMoc>
+    <QtMoc Include="src\UIPanelInfo.h">
       <Filter>Source Files</Filter>
     </QtMoc>
     <QtMoc Include="src\UIRowLinkItem.h">
@@ -149,6 +173,9 @@
     <QtUic Include="src\UIMainWindow.ui">
       <Filter>Form Files</Filter>
     </QtUic>
+    <QtUic Include="src\UIPanelInfo.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
     <QtUic Include="src\UIRowLinkItem.ui">
       <Filter>Form Files</Filter>
     </QtUic>
@@ -173,6 +200,9 @@
       <Filter>Resource Files</Filter>
     </None>
     <None Include="src\icon\arrowU2.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="src\icon\clipboard.png">
       <Filter>Resource Files</Filter>
     </None>
     <None Include="src\icon\driveFind.png">
@@ -225,7 +255,10 @@
     <ClInclude Include="src\Enums.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\ItemR.h">
+    <ClInclude Include="src\ItemSymLink.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\revinfo.inc">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="src\utils.h">

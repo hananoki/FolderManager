@@ -17,5 +17,6 @@
         <file>icon/linkC.png</file>
         <file>icon/menu.png</file>
         <file>icon/garbageCan.png</file>
+        <file>icon/clipboard.png</file>
     </qresource>
 </RCC>

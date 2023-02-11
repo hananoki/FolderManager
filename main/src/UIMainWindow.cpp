@@ -7,6 +7,7 @@
 #include "ItemR.h"
 #include "FileDB.h"
 #include "ContextMenu.h"
+#include "revinfo.inc"
 
 //////////////////////////////////////////////////////////////////////////////////
 class UIMainWindow::Impl : public Ui_UIMainWindow {
@@ -27,15 +28,17 @@ public:
 
 		UIMainWindow::instance = self;
 		setupUi( self );
-		//actionL->setIcon( icon::SP_ArrowBack() );
-		//actionR->setIcon( icon::SP_ArrowForward() );
-		connect(
-			&fileDB,
-			&FileDB::errorCache,
-			self,
-			std::bind( &Impl::errorCache, this, std::placeholders::_1 ) );
+
+		connect( &fileDB, &FileDB::signal_errorCache, self, std::bind( &Impl::errorCache, this, std::placeholders::_1 ) );
+		connect( &fileDB, &FileDB::signal_startAnalize, std::bind( &Impl::startAnalize, this ) );
+		connect( &fileDB, &FileDB::signal_completeAnalize, std::bind( &Impl::completeAnalize, this ) );
+		connect( &fileDB, &FileDB::signal_startFileLoad, std::bind( &Impl::startFileLoad, this ) );
+		connect( &fileDB, &FileDB::signal_completeFileLoad, std::bind( &Impl::completeFileLoad, this ) );
+
 
 		fileDB.init();
+
+		//self->setWindowTitle( $$( "%1 rev %2" ).arg( self->windowTitle() ).arg( revno ) );
 	}
 
 
@@ -48,7 +51,7 @@ public:
 #endif
 
 		progressBar->hide();
-		actionL->setEnabled(false);
+		actionL->setEnabled( false );
 		actionR->setEnabled( false );
 
 
@@ -60,13 +63,12 @@ public:
 		action_fileView->setChecked( true );
 
 		/// 親アイテムに移動
-		$Action::triggered( action_moveParent, std::bind( &self_t::action_moveParent, self ) );
+		$Action::triggered( action_moveParent, std::bind( &self_t::signal_moveParent, self ) );
 
 		/// フォルダ容量を計算
-		$Action::triggered( action_calcFolder, std::bind( &self_t::action_calcFolder, self ) );
+		$Action::triggered( action_calcFolder, std::bind( &self_t::calcFolder, self ) );
 
 		$Action::triggered( actionDebug, std::bind( &Impl::_actionDebug, this ) );
-
 
 
 		$Action::triggered( action_fileView, [&]() {
@@ -76,21 +78,13 @@ public:
 			setBrowseMode( action_symbolicLink );
 		} );
 
-		connect( &fileDB, &FileDB::startAnalize, std::bind( &Impl::_startAnalize, this ) );
-		connect( &fileDB, &FileDB::completeAnalize, std::bind( &Impl::_completeAnalize, this ) );
-		connect( &fileDB, &FileDB::completeFileLoad, std::bind( &Impl::completeFileLoad, this ) );
 
 		// 左ビューの選択
 		connect(
 			viewL,
-			&UIViewL::itemSelectionChanged,
+			&UIViewL::signal_itemSelectionChanged,
 			std::bind( &Impl::uiViewL_itemSelectionChanged, this, std::placeholders::_1 ) );
 
-		connect(
-			qtWindow,
-			&UIMainWindow::uiViewL_selectPath,
-			self,
-			std::bind( &Impl::uiViewL_selectPath, this, std::placeholders::_1 ) );
 	}
 
 
@@ -120,25 +114,32 @@ public:
 
 
 	/////////////////////////////////////////
-	void _startAnalize() {
+	void startAnalize() {
 		progressBar->show();
 	}
 
 
 	/////////////////////////////////////////
-	void _completeAnalize() {
+	void completeAnalize() {
 		UIStatusBar::info( u8"フォルダ容量を計算が完了しました" );
 		progressBar->hide();
 	}
 
 
 	/////////////////////////////////////////
+	void startFileLoad() {
+		UIStatusBar::progressStart( u8"キャッシュデータを読み込みんでいます " );
+	}
+
+
+	/////////////////////////////////////////
 	void completeFileLoad() {
+		UIStatusBar::progressStop();
 		if( errorList.isEmpty() ) {
-			UIStatusBar::info( u8"キャッシュデータを読みcompleteFileLoad" );
+			UIStatusBar::info( u8"キャッシュデータを読み込みました" );
 		}
 		else {
-			QMessageBox::warning( self, u8"情報", u8"キャッシュデータが壊れているため、読み込みを中止しました\n\n"+ errorList.join("\n") );
+			QMessageBox::warning( self, u8"情報", u8"キャッシュデータが壊れているため、読み込みを中止しました\n\n" + errorList.join( "\n" ) );
 			UIStatusBar::warning( u8"キャッシュデータが壊れているため、読み込みを中止しました" );
 		}
 	}
@@ -166,9 +167,6 @@ public:
 		//}
 		//fileDB.save();
 	}
-
-
-
 
 
 	/////////////////////////////////////////
@@ -220,7 +218,7 @@ void UIMainWindow::start() {
 	emit signal_start();
 	//emit signal_startAfter();
 
-	emit uiViewL_selectPath( $$( "%1:/" ).arg( config.driveLetter ) );
+	selectPath( $$( "%1:/" ).arg( config.driveLetter ) );
 }
 
 /////////////////////////////////////////
@@ -243,4 +241,20 @@ UIViewL* UIMainWindow::uiViewL() {
 /////////////////////////////////////////
 UIViewR* UIMainWindow::uiViewR() {
 	return impl->viewR;
+}
+
+/////////////////////////////////////////
+void UIMainWindow::selectPath( QString path ) {
+	emit qtWindow->signal_selectPath( path );
+}
+
+/////////////////////////////////////////
+void UIMainWindow::changeDrive( QChar driveName ) {
+	emit qtWindow->signal_changeDrive( driveName );
+}
+
+/////////////////////////////////////////
+/// フォルダ容量を計算
+void UIMainWindow::calcFolder() {
+	emit qtWindow->signal_calcFolder();
 }

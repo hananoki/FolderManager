@@ -3,6 +3,7 @@
 //////////////////////////////////////////////////////////////////////////////////
 class ContextMenu : public QMenu {
 public:
+
 	template<class T>
 	void addAction( HTreeWidget* treeWidget ) {
 		auto* p = T::create( treeWidget );
@@ -10,6 +11,7 @@ public:
 		lst << p;
 		QMenu::addAction( p );
 	}
+
 	template<class T, class U>
 	void addAction( HTreeWidget* treeWidget, U a ) {
 		auto* p = T::create( treeWidget, a );

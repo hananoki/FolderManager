@@ -22,12 +22,13 @@ public:
 	QStringList symbolicLinkSource( const QString& fullPath );
 
 signals:
-	void startAnalize();
-	void completeAnalize();
+	void signal_startAnalize();
+	void signal_completeAnalize();
 
-	void completeFileLoad();
+	void signal_startFileLoad();
+	void signal_completeFileLoad();
 
-	void errorCache( QString path );
+	void signal_errorCache( QString path );
 
 private:
 	class Impl;

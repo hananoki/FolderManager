@@ -3,6 +3,8 @@
 #include <QMainWindow>
 
 #define qtWindow (UIMainWindow::instance)
+#define qtWindowUiViewL (qtWindow->uiViewL())
+#define qtWindowUiViewR (qtWindow->uiViewR())
 
 class UIViewL;
 class UIViewR;
@@ -29,32 +31,35 @@ public:
 	UIViewL* uiViewL();
 	UIViewR* uiViewR();
 
+	void selectPath( QString path );
+
+	/// ドライブの切り替え
+	void changeDrive( QChar driveName );
+
+	/// フォルダ容量を計算
+	void calcFolder();
+
 signals:
 	void signal_start();
 	void signal_startAfter();
 	void signal_closeWindow();
 
 	/// 親アイテムに移動
-	void action_moveParent();
+	void signal_moveParent();
 
 	/// フォルダ容量を計算
-	void action_calcFolder();
+	void signal_calcFolder();
 
-	void deleteFolder( const QString& fullPath );
+	void deleteItem( const QString& fullPath );
 
-	/// ドライブの切り替え
-	void changeDrive( QChar driveName );
+	void signal_selectPath( const QString& path );
+	void signal_changeDrive( QChar driveName );
 
 	void setBrowseMode( int );
 
-	void uiViewL_addChild( ItemL*, ItemL*, bool bCurrent = false );
-	void uiViewL_sortItem();
-	void uiViewL_selectPath( QString path );
-
 	
-
-	/// 指定したアイテムにフォーカス
-	void uiViewL_focusItem( ItemL* );
+	void uiViewL_sortItem();
+	
 
 private:
 	class Impl;

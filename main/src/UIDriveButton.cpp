@@ -4,6 +4,7 @@
 #include "UIMainWindow.h"
 #include "UIViewL.h"
 #include "ItemL.h"
+#include "UIPanelInfo.h"
 
 using namespace cpplinq;
 
@@ -25,7 +26,6 @@ public:
 		pushButton_2->hide();
 #endif
 
-
 		pushButton->setIcon( icon::SP_TitleBarMenuButton() );
 		pushButton_2->setIcon( icon::SP_ComputerIcon() );
 
@@ -45,10 +45,13 @@ public:
 			p->setIcon( icon::get( *it ) );
 			horizontalLayout->insertWidget( 0, p );
 
-			$PushButton::clicked( p, [this, p]( bool b ) {
+			$PushButton::clicked( p, [this, p]( bool  ) {
+
 				config.driveLetter = p->text()[ 0 ];
-				updateChecked( config.driveLetter );
-				emit qtWindow->uiViewL_selectPath( $$( "%1:/" ).arg( config.driveLetter ) );
+				//updateChecked( config.driveLetter );
+
+				qtWindow->selectPath( $$( "%1:/" ).arg( config.driveLetter ) );
+				
 			} );
 		}
 
@@ -70,14 +73,18 @@ public:
 			QMessageBox::aboutQt( self, tr( u8"Qtについて" ) );
 		} );
 
+		$PushButton::click( pushButton_3, [&]() {
+			$::showDialog<UIPanelInfo>(self);
+		} );
+
 		/// 指定したアイテムにフォーカス
 		connect(
-			qtWindow,
-			&UIMainWindow::uiViewL_focusItem,
+			qtWindow->uiViewL(),
+			&UIViewL::signal_focusItem,
 			self,
-			std::bind( &Impl::uiViewL_focusItem, this, std::placeholders::_1 ) );
+			std::bind( &Impl::focusItem, this, std::placeholders::_1 ) );
 
-		emit qtWindow->uiViewL_selectPath( $$( "%1:/" ).arg( config.driveLetter ) );
+		qtWindow->selectPath( $$( "%1:/" ).arg( config.driveLetter ) );
 	}
 
 
@@ -92,7 +99,7 @@ public:
 
 	/////////////////////////////////////////
 	/// 指定したアイテムにフォーカス
-	void uiViewL_focusItem( ItemL* item ) {
+	void focusItem( ItemL* item ) {
 		updateChecked( item->fullPath[ 0 ] );
 	}
 
@@ -109,5 +116,7 @@ UIDriveButton::UIDriveButton( QWidget* parent ) :
 	} );
 }
 
+
+/////////////////////////////////////////
 UIDriveButton::~UIDriveButton() {
 }

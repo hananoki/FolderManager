@@ -22,7 +22,7 @@ public:
 
 		for( auto& path : targetList ) {
 			contextMenu->addAction( $Action::create( path, icon::get( path ), [path]() {
-				emit qtWindow->uiViewL_selectPath( path );
+				qtWindow->selectPath( path );
 			} ) );
 		}
 
@@ -42,6 +42,9 @@ public:
 
 
 
+
+
+
 //////////////////////////////////////////////////////////////////////////////////
 UIRowLinkItem::UIRowLinkItem( QWidget* parent, const QStringList& targetList ) :
 	QWidget( parent ),
@@ -53,4 +56,6 @@ UIRowLinkItem::UIRowLinkItem( QWidget* parent, const QStringList& targetList ) :
 /////////////////////////////////////////
 UIRowLinkItem::~UIRowLinkItem() {
 }
+
+
 

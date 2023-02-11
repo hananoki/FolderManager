@@ -102,6 +102,8 @@ public:
 		/////////////////////////////////////////
 		connect( &watcherInit, &QFutureWatcher<void>::finished, self, std::bind( &Impl::watcherInit_finished, this ) );
 
+		emit self->signal_startFileLoad();
+
 		futureInit = QtConcurrent::run( [&]() {
 			for( auto& filePath : fs::getFiles( environment::currentDirectory(), "*.cache", SearchOption::TopDirectoryOnly ) ) {
 				QChar dr = path::getFileName( filePath )[ 0 ];
@@ -117,7 +119,7 @@ public:
 
 	/////////////////////////////////////////
 	void watcherInit_finished() {
-		emit self->completeFileLoad();
+		emit self->signal_completeFileLoad();
 	}
 
 
@@ -131,7 +133,7 @@ public:
 	void watcher_finished() {
 		DriveCache::write( sizeMap[ analizeDriveName ], analizeDriveName );
 
-		emit self->completeAnalize();
+		emit self->signal_completeAnalize();
 	}
 
 
@@ -188,12 +190,12 @@ public:
 			} );
 			watcher.setFuture( future );
 
-			emit self->startAnalize();
+			emit self->signal_startAnalize();
 		}
 		else {
 			future = QtConcurrent::run( [this, fullPath]() {
 				auto f = Folder( fullPath );
-				//calcSize.clear();
+
 				f.calcSize( watcher2 );
 
 				auto paths = fullPath.split( "/" );
@@ -213,9 +215,9 @@ public:
 				}
 			} );
 			watcher.setFuture( future );
-			//future2.waitForFinished();
 
-			emit self->startAnalize();
+
+			emit self->signal_startAnalize();
 		}
 	}
 
@@ -230,7 +232,6 @@ public:
 
 	/////////////////////////////////////////
 	void setSymbolicLink( const QString& fullPath, const QString& targetPath ) {
-		//impl->setSymbolicLink( fullPath, targetPath );
 		driveCache( fullPath ).setSymbolicLink( fullPath, targetPath );
 	}
 
@@ -294,6 +295,7 @@ DriveCache& FileDB::driveCache( QChar drive ) {
 /////////////////////////////////////////
 QStringList FileDB::symbolicLinkSource( const QString& fullPath ) {
 	QStringList result;
+
 	impl->driveCache( [&result, fullPath]( DriveCache& dr ) {
 		for( auto& f : dr.symbolicLink.keys() ) {
 			if( dr.symbolicLink[ f ] == fullPath ) {
@@ -301,9 +303,6 @@ QStringList FileDB::symbolicLinkSource( const QString& fullPath ) {
 			}
 		}
 	} );
-
-	//auto& dr = impl->driveCache( fullPath[0] );
-
 
 	return result;
 }

@@ -5,9 +5,10 @@ class ItemFileInfo : public HTreeWidgetItem {
 public:
 	QString fullPath;
 	HFileInfo fileInfo;
+	HTreeWidget* tw;
 
 	/////////////////////////////////////////
-	ItemFileInfo( QTreeWidget* parent, const QString& _fullPath );
+	ItemFileInfo( HTreeWidget* parent, const QString& _fullPath );
 
 	/////////////////////////////////////////
 	bool isFolder();

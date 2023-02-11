@@ -42,12 +42,16 @@ SOURCES += \
     src/ItemFileInfo.cpp \
     src/ItemL.cpp \
     src/ItemR.cpp \
+    src/ItemSymLink.cpp \
     src/SelectiHistory.cpp \
+    src/TreeViewFileBrowse.cpp \
+    src/TreeViewSymLink.cpp \
     src/UIRowLinkItem.cpp \
     src/UIViewL.cpp \
     src/UIViewR.cpp \
     src/utils.cpp \
     src/UIDriveButton.cpp \
+    src/UIPanelInfo.cpp \
     src/UIMainWindow.cpp
 
 HEADERS += \
@@ -61,16 +65,22 @@ HEADERS += \
     src/ItemFileInfo.h \
     src/ItemL.h \
     src/ItemR.h \
+    src/ItemSymLink.h \
     src/SelectiHistory.h \
+    src/TreeViewFileBrowse.h \
+    src/TreeViewSymLink.h \
     src/UIRowLinkItem.h \
     src/UIViewL.h \
     src/UIViewR.h \
     src/utils.h \
     src/UIDriveButton.h \
-    src/UIMainWindow.h
+    src/UIPanelInfo.h \
+    src/UIMainWindow.h \
+    src/revinfo.inc
 
 FORMS += \
     src/UIDriveButton.ui \
+    src/UIPanelInfo.ui \
     src/UIMainWindow.ui \
     src/UIRowLinkItem.ui \
     src/UIViewL.ui \

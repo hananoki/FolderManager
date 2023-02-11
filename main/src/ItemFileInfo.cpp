@@ -2,22 +2,18 @@
 
 
 //////////////////////////////////////////////////////////////////////////////////
-ItemFileInfo::ItemFileInfo( QTreeWidget* parent, const QString& _fullPath ) :
-	HTreeWidgetItem( parent ),
+ItemFileInfo::ItemFileInfo( HTreeWidget* parent, const QString& _fullPath ) :
+	HTreeWidgetItem(),
 	fullPath( _fullPath ),
-	fileInfo( _fullPath ) 
-{
+	fileInfo( _fullPath ),
+	tw( parent ) {
 
 }
 
 
 /////////////////////////////////////////
 bool ItemFileInfo::openFile() {
-	if( fs::isExistFile( fullPath ) ) {
-		$::showInExplorer( fullPath );
-		return true;
-	}
-	if( fs::isExistDirectory( fullPath ) ) {
+	if( fs::isExistFile( fullPath ) || fs::isExistDirectory( fullPath ) ) {
 		$::showInExplorer( fullPath );
 		return true;
 	}

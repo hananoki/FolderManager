@@ -92,7 +92,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>src\pch.h</PrecompiledHeaderFile>
       <PrecompiledHeaderOutputFile>$(IntDir)\FolderManager.pch</PrecompiledHeaderOutputFile>
-      <PreprocessorDefinitions>_WINDOWS;UNICODE;_UNICODE;WIN32;_ENABLE_EXTENDED_ALIGNED_STORAGE;WIN64;NDEBUG;QT_NO_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_WINDOWS;UNICODE;_UNICODE;WIN32;_ENABLE_EXTENDED_ALIGNED_STORAGE;WIN64;NDEBUG;NDEBUG;QT_NO_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PreprocessToFile>false</PreprocessToFile>
       <ProgramDataBaseFileName>
       </ProgramDataBaseFileName>
@@ -122,7 +122,7 @@
       <WarningLevel>0</WarningLevel>
     </Midl>
     <ResourceCompile>
-      <PreprocessorDefinitions>_WINDOWS;UNICODE;_UNICODE;WIN32;_ENABLE_EXTENDED_ALIGNED_STORAGE;WIN64;NDEBUG;QT_NO_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_WINDOWS;UNICODE;_UNICODE;WIN32;_ENABLE_EXTENDED_ALIGNED_STORAGE;WIN64;NDEBUG;NDEBUG;QT_NO_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ResourceCompile>
     <QtMoc>
       <CompilerFlavor>msvc</CompilerFlavor>
@@ -220,9 +220,13 @@
     <ClCompile Include="src\ItemFileInfo.cpp" />
     <ClCompile Include="src\ItemL.cpp" />
     <ClCompile Include="src\ItemR.cpp" />
+    <ClCompile Include="src\ItemSymLink.cpp" />
     <ClCompile Include="src\SelectiHistory.cpp" />
+    <ClCompile Include="src\TreeViewFileBrowse.cpp" />
+    <ClCompile Include="src\TreeViewSymLink.cpp" />
     <ClCompile Include="src\UIDriveButton.cpp" />
     <ClCompile Include="src\UIMainWindow.cpp" />
+    <ClCompile Include="src\UIPanelInfo.cpp" />
     <ClCompile Include="src\UIRowLinkItem.cpp" />
     <ClCompile Include="src\UIViewL.cpp" />
     <ClCompile Include="src\UIViewR.cpp" />
@@ -242,11 +246,18 @@
     <ClInclude Include="src\ItemFileInfo.h" />
     <ClInclude Include="src\ItemL.h" />
     <ClInclude Include="src\ItemR.h" />
+    <ClInclude Include="src\ItemSymLink.h" />
     <QtMoc Include="src\SelectiHistory.h">
+    </QtMoc>
+    <QtMoc Include="src\TreeViewFileBrowse.h">
+    </QtMoc>
+    <QtMoc Include="src\TreeViewSymLink.h">
     </QtMoc>
     <QtMoc Include="src\UIDriveButton.h">
     </QtMoc>
     <QtMoc Include="src\UIMainWindow.h">
+    </QtMoc>
+    <QtMoc Include="src\UIPanelInfo.h">
     </QtMoc>
     <QtMoc Include="src\UIRowLinkItem.h">
     </QtMoc>
@@ -322,6 +333,7 @@ echo #include "pch.h"&gt;&gt;src\pch.h.cpp</Command>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Generating precompiled header source file 'src\pch.h.cpp' ...</Message>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">src\pch.h.cpp;%(Outputs)</Outputs>
     </CustomBuild>
+    <ClInclude Include="src\revinfo.inc" />
     <ClInclude Include="src\utils.h" />
   </ItemGroup>
   <ItemGroup>
@@ -355,6 +367,8 @@ echo #include "pch.h"&gt;&gt;src\pch.h.cpp</Command>
     </QtUic>
     <QtUic Include="src\UIMainWindow.ui">
     </QtUic>
+    <QtUic Include="src\UIPanelInfo.ui">
+    </QtUic>
     <QtUic Include="src\UIRowLinkItem.ui">
     </QtUic>
     <QtUic Include="src\UIViewL.ui">
@@ -368,6 +382,7 @@ echo #include "pch.h"&gt;&gt;src\pch.h.cpp</Command>
     <None Include="src\icon\arrowL2.png" />
     <None Include="src\icon\arrowR2.png" />
     <None Include="src\icon\arrowU2.png" />
+    <None Include="src\icon\clipboard.png" />
     <None Include="src\icon\driveFind.png" />
     <None Include="src\icon\folder.png" />
     <None Include="src\icon\garbageCan.png" />

@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>573</width>
-    <height>53</height>
+    <height>35</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -50,6 +50,17 @@
     </widget>
    </item>
    <item>
+    <widget class="HFlatPushButton" name="pushButton_3">
+     <property name="text">
+      <string>Folder Managerについて</string>
+     </property>
+     <property name="icon">
+      <iconset resource="res.qrc">
+       <normaloff>:/res/icon/AppIcon.ico</normaloff>:/res/icon/AppIcon.ico</iconset>
+     </property>
+    </widget>
+   </item>
+   <item>
     <widget class="HFlatPushButton" name="pushButton">
      <property name="text">
       <string>Qtについて</string>
@@ -65,6 +76,8 @@
    <header>HFlatPushButton.h</header>
   </customwidget>
  </customwidgets>
- <resources/>
+ <resources>
+  <include location="res.qrc"/>
+ </resources>
  <connections/>
 </ui>

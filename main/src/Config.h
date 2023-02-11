@@ -20,8 +20,8 @@ using TMap = QMap<QString, QString>;
 	CONFIG_VALUE( QString, splitterSize ) \
 	CONFIG_VALUE( int, tabIndex )
 
-//CONFIG_VALUE( QString, addDataPath ) \
 
+//////////////////////////////////////////////////////////////////////////////////
 class Config : public QObject, public IConfigChanged {
 	Q_OBJECT
 public:

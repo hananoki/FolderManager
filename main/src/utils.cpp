@@ -2,8 +2,9 @@
 
 #include "ItemR.h"
 #include "ItemL.h"
+#include "ItemSymLink.h"
 #include "ActionFile.h"
-//#include "ActionFolder.h"
+
 #include "ContextMenu.h"
 
 namespace utils {
@@ -31,24 +32,44 @@ namespace utils {
 		return ( *it );
 	}
 
+
 	/////////////////////////////////////////
 	void createContextMenu( std::unique_ptr<ContextMenu>* contextMenu, HTreeWidget* treeWidget ) {
 		treeWidget->setContextMenuPolicy( Qt::ContextMenuPolicy::CustomContextMenu );
 
-		$TreeWidget::customContextMenuRequested( treeWidget, [treeWidget, contextMenu]( const QPoint& pos ) {
+		$TreeWidget::customContextMenuRequested( treeWidget, [contextMenu,treeWidget]( const QPoint& pos ) {
 			QModelIndex index = treeWidget->indexAt( pos );
 			if( !index.isValid() ) return;
 
 			auto* itemBase = reinterpret_cast<QTreeWidgetItem*>( index.internalPointer() );
 
 			auto* itemFileInfo = dynamic_cast<ItemFileInfo*>( itemBase );
+			auto* itemSymLink = dynamic_cast<ItemSymLink*>( itemBase );
 
 			( *contextMenu ) = std::make_unique<ContextMenu>();
 
 			if( itemFileInfo ) {
-				( *contextMenu )->addAction<ActionOpenFile>( treeWidget );
+				if( itemFileInfo->isFile() ) {
+					( *contextMenu )->addAction<ActionOpenFile>( treeWidget );
+				}
 				( *contextMenu )->addAction<ActionShowInExplorer>( treeWidget );
-				( *contextMenu )->addAction<ActionCopyFileName>( treeWidget );
+				( *contextMenu )->addSeparator();
+				( *contextMenu )->addAction<ActionCopyPathName>( treeWidget );
+				( *contextMenu )->addAction<ActionCopyFullPathName>( treeWidget );
+				if( itemSymLink ) {
+					( *contextMenu )->addAction<Action_ShowTargetPath>( treeWidget );
+				}
+#ifdef Q_OS_WIN
+				( *contextMenu )->addSeparator();
+				auto lst = QStandardPaths::standardLocations( QStandardPaths::ApplicationsLocation );
+				auto w = path::getDirectoryName( path::getDirectoryName( lst[ 0 ] ) );
+				w += "/SendTo";
+				for( auto& f : fs::getFiles( w, "*.lnk" ) ) {
+					QFileInfo fi( f );
+					auto ss = fi.symLinkTarget();
+					( *contextMenu )->addAction<Action_LnkFile>( treeWidget, ss );
+				}
+#endif
 				( *contextMenu )->addSeparator();
 				( *contextMenu )->addAction<ActionDelete>( treeWidget );
 				( *contextMenu )->addAction<ActionRename>( treeWidget );
@@ -59,32 +80,6 @@ namespace utils {
 			( *contextMenu )->exec( treeWidget->viewport()->mapToGlobal( pos ) );
 		} );
 	}
-
-#if false
-	/////////////////////////////////////////
-	void createFolderContextMenu( std::unique_ptr<ContextMenu>* contextMenu, HTreeWidget* treeWidget ) {
-		$TreeWidget::customContextMenuRequested( treeWidget, [treeWidget, contextMenu]( const QPoint& pos ) {
-			QModelIndex index = treeWidget->indexAt( pos );
-			if( !index.isValid() ) return;
-
-			auto* item = dynamic_cast<ItemFolder*>( reinterpret_cast<QTreeWidgetItem*>( index.internalPointer() ) );
-			if( item ) {
-				( *contextMenu ) = std::make_unique<ContextMenu>();
-				( *contextMenu )->addAction<ActionOpenFolder>( treeWidget );
-				( *contextMenu )->addAction<ActionFolderPathCopy>( treeWidget );
-
-				auto* item2 = dynamic_cast<ItemFolderMO2View*>( item );
-				if( item2 ) {
-					( *contextMenu )->addSeparator();
-					( *contextMenu )->addAction<ActionFolderOpenNexus>( treeWidget );
-			}
-
-				( *contextMenu )->exec( treeWidget->viewport()->mapToGlobal( pos ) );
-		}
-
-	} );
-}
-#endif
 
 };
 

@@ -5,18 +5,23 @@
 static const quint32 FFDB = MAKE_SIG( 'F', 'F', 'D', 'B' );
 static const quint32 VER = MAKE_SIG( 'V', '1', '0', '1' );
 
+///////////////////////////////////////
 inline
 QDataStream& operator<<( QDataStream& out, SizeSet& hash ) {
 	out << hash.folderFileSize << hash.fileSize;
 	return out;
 }
 
+
+///////////////////////////////////////
 inline
 QDataStream& operator>>( QDataStream& in, SizeSet& hash ) {
 	in >> hash.folderFileSize >> hash.fileSize;
 	return in;
 }
 
+
+///////////////////////////////////////
 inline
 QDataStream& operator<<( QDataStream& out, DriveCache& hash ) {
 
@@ -46,6 +51,8 @@ QDataStream& operator<<( QDataStream& out, DriveCache& hash ) {
 	return out;
 }
 
+
+///////////////////////////////////////
 inline
 QDataStream& operator>>( QDataStream& in, DriveCache& hash ) {
 
@@ -102,7 +109,7 @@ void DriveCache::read( DriveCache& dc, const QString& filePath ) {
 		} );
 	}
 	catch( int code ) {
-		emit fileDB.errorCache( path::getFileName( filePath ) );
+		emit fileDB.signal_errorCache( path::getFileName( filePath ) );
 	}
 }
 
@@ -148,4 +155,9 @@ void DriveCache::setSymbolicLink( const QString& fullPath, const QString& target
 	else {
 		( *it ) = targetPath;
 	}
+}
+
+/////////////////////////////////////////
+bool DriveCache::isEmpty() {
+	return folderFileSize.size() == 0 && symbolicLink.size()==0;
 }

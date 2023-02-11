@@ -1,5 +1,5 @@
 Copyright (c) 2023 hananoki  
-[https://github.com/hananoki](https://github.com/hananoki)
+[https://github.com/hananoki/FolderManager](https://github.com/hananoki/FolderManager)
 
 ---
 
@@ -10,7 +10,4 @@ https://github.com/mrange/cpplinq
 
 #### Magic Enum C++  
 https://github.com/Neargye/magic_enum
-
-#### zlib  
-https://zlib.net
 

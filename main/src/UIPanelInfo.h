@@ -1,17 +1,14 @@
-#pragma once
+﻿#pragma once
 
-#include <QWidget>
-
-class ItemL;
-class ItemR;
+#include <QDialog>
 
 //////////////////////////////////////////////////////////////////////////////////
-class UIViewR : public QWidget {
+class UIPanelInfo : public QDialog {
 	Q_OBJECT
 
 public:
-	explicit UIViewR( QWidget* parent = nullptr );
-	~UIViewR();
+	explicit UIPanelInfo( QWidget* parent = nullptr );
+	~UIPanelInfo();
 
 private:
 	class Impl;
